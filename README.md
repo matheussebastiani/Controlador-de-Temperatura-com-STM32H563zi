@@ -118,3 +118,37 @@ Sensor analógico que será responsável por passar os valores de temperatura a 
 <p align="center">
  <img src="imgs/SENSOR_TEMPERATURA_LM35.png" width="500">
 </p>
+
+## Driver de Potência L293D - Quadruple Half-H Drivers
+
+O driver de potência **L293D** é um CI composto por quatro meias Pontes-H feito para o acionamento de cargas indutivas como motores, indutores, relés, etc. Seu _datasheet_ pode ser verificado [aqui](docs/l293d.pdf).
+
+Este CI é o driver sugerido para efetuar o acionamento do motor e da carga resistiva. 
+
+Para uma melhor compreensão do CI, algumas especificações do _datasheet_ do componente serão detalhados aqui, por mais que, muito provavelmente, no momento da montagem e integração final dos componentes do trabalho, será fornecida uma placa com o circuito pronto para a conexão com as cargas + _PWM_ (através de um _shield_ muito provavelmente compatível com Arduino).
+
+Algumas características elétricas do CI:
+- Tensão de alimentação: 4.5 a 36V para _V<sub>cc1</sub>_ e _V<sub>cc2</sub>_
+- Saídas de até 600mA por canal.
+
+A pinagem do CI e a tabela contendo suas funções pode ser verificada em sequência:
+
+<p align="center">
+ <img src="imgs/l293d_pinout.png" width="500">
+</p>
+
+>[!NOTE]
+>Ainda segundo o _datasheet_, é recomendado que  _V<sub>cc1</sub>_ opere de 4.5 a 7V, e que _V<sub>cc1</sub>_ opere de no mínimo _V<sub>cc1</sub>_ até 36V.
+
+O driver pode ser utilizado de diversas maneiras. Como nossa aplicação acionará duas cargas, no caso, um Motor DC e uma carga resistiva, o driver será utilizado como se estivesse controlando dois Motores DC, como descreve a seção 9.3.2 do _datasheet_ do componente.
+
+O modo de operação pode ser verificado na figura em sequência.
+
+<p align="center">
+ <img src="imgs/l293d_operation.png" width="500">
+</p>
+
+Basicamente serão utilizados os pinos 10 (3A), 11 (3Y), 14 (4Y) e 15 (4A). Nos pinos identificados com Y, a corrente proveniente do acionamento das respectivas cargas fluirá. Os pinos terminados em A são os pinos de acionamento do respectivo transistor. No caso do 3A chaveando para o _GND_, e no caso do 4A, chaveando para _VCC_.
+
+>[!NOTE]
+>É necessário relembrar que os pinos de _enable_ do CI deverão ser acionados via _GPIOs_ do microcontrolador, caso o shield não ligue o pino internamente.
