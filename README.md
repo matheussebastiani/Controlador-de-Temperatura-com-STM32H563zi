@@ -109,8 +109,12 @@ O microcontrolador será responsável por...
 Todo o desenvolvimento será feito por meio da IDE STM32CubeIDE utilziando a biblioteca HAL, organizando em arquivos .C e .H.
 
 FOTO DO MICRO COM A PLACA E SEUS PERIFERICOS
-![Legenda](url da img)
+
 ## SENSOR DE TEMPERATURA (LM35):
 Sensor analogico que sera responsável por passar os valores de temperatura a serem utilizados no projeto.
-![SENSOR LM35](/imgs/SENSOR_TEMPERATURA_LM35.PNG)
 
+<!-- Aqui será utilizado um trecho de código HTML para centralizar a imagem. O GitHub permite essa bruxaria -->
+
+<p align="center">
+ <img src="imgs/SENSOR_TEMPERATURA_LM35.png" width="500">
+</p>
