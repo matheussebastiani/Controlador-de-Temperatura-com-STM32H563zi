@@ -95,23 +95,23 @@ Será a tela em que o usuário poderá controlar manualmente a rotação do FAN 
 >[!IMPORTANT]
 >É importante salientar de que as telas deverão ser de fácil entendimento e manuseio, além de fácil distinção entre uma e outra (TELA 1 & TELA 2).
 
-### PERIFÉRICOS E MICROCONTROLADOR
+### MICROCONTROLADOR E PERIFÉRICOS
 
 ## MCU - STM32H565ZI:
 O microcontrolador será responsável por...
-1. Leitura do sinal analogico vindo do sensor de temperatura (LM35) pelo ADC interno da placa.
+1. Leitura do sinal analógico vindo do sensor de temperatura (LM35) pelo ADC interno da placa.
 2. Converter o valor ADC para graus Celsius.
 3. Calcular o "erro" entre o SET-POINT e o PROCESS VALUE.
 4. Aplicar o ganho proporcional Kp.
 5. Gerar sinais PWM para comunicação com o FAN  e RESISTOR.
 6. Comunicar via UART com o NEXTION NX8048P070 pela tela do computador para testes e ao fim do projeto com o display.
 7. Controlar o LED do HEART BEAT
-Todo o desenvolvimento será feito por meio da IDE STM32CubeIDE utilziando a biblioteca HAL, organizando em arquivos .C e .H.
+Todo o desenvolvimento será feito por meio da IDE STM32CubeIDE utilizando a biblioteca HAL, organizando em arquivos .C e .H.
 
 FOTO DO MICRO COM A PLACA E SEUS PERIFERICOS
 
 ## SENSOR DE TEMPERATURA (LM35):
-Sensor analogico que sera responsável por passar os valores de temperatura a serem utilizados no projeto.
+Sensor analógico que será responsável por passar os valores de temperatura a serem utilizados no projeto.
 
 <!-- Aqui será utilizado um trecho de código HTML para centralizar a imagem. O GitHub permite essa bruxaria -->
 
