@@ -184,4 +184,36 @@ Portanto:
 **Tensão máxima permitida: 3,32 V**  
 **Corrente correspondente: I = 3,32 / 22 ≈ 0,1508 A**
 
+## VENTILADOR:
+Será reproduzido por um motor DC, tendo como especificações os seguintes valores...
+1. Tensão de alimentação: 12 VDC
+2. Corrente típica: 130 mA
+
+<p align="center">
+ <img src="" width="500">
+</p>
+
+>[!IMPORTANT]
+>O ventilador (MOTOR DC) deverá ser acionado pelo driver de potência já especificado, contendo a modulação PWM vindo do microcontrolador.
+
+### ACIONAMENTO DAS SAÍDAS:
+
+Contendo agora todos os perifericos do projeto, podemos estipular uma logica para que o acionamento das saídas utilizadas sejam feitas corretamente (AQUECEDOR, VENTILADOR).
+>[!IMPORTANT]
+>É válido recordar de que teremos 2 modos de operação, AUTOMÁTICO e MANUAL.
+
+# MODO AUTOMÁTICO:
+1. O controlador pessoal (P) que será responsável por determinar o valor de saáda, tendo em vista a diferença de SP e PV -> e(t) = SP - PV.
+2. REGRAS DE FUNCIONAMENTO DO AQUECEDOR:
+   Ele deverá ser acionado sempre que o valor do setpoint (SP) for maior que o process value (PV) -> SP > PV.
+   Na condiçao acima, e erro é positivo, o valor proporcional gerado pelo controlador é maior que 0, o PWM do aquecedor irá receber o valor após a saturação entre 0% e 100% e o ventilador deverá se manter ligado durante esse processo.
+>[!NOTE]
+> EXEMPLO: SP = 50◦C, P V = 42◦C, o valor de (e) será  = 8◦C (DIANTE DISSO O AQUECEDOR DEVERÁ LIGAR COM POTÊNCIA PROPORCIONAL AO VALOR DO ERRO (e)
+
+3. REGRAS DE FUNCIOMANTO DO VENTILADOR:
+   Ele deve ser acionado sempre que o valor do process value (PV) for maior que o set point (SP) -> PV > SP.
+   Na condição acima, o erro será negativo, a ação de aquecer não se torna necessária (PWM = 0), a intensidade do ventilador deve ser relacionada com o módulo do valor do erro (e) e o aquecedor deve se manter desligado.
+>[!NOTE]
+>EXEMPLO: SP = 40◦C, PV = 47◦C, o valor de (e) será  = −7◦C (DIANTE DISSO O SISTEMA DEVE LIGAR O VENTILADOR CONTENDO A POTÊNCIA EQUIVALENTE OU PROPORCIONAL AO ERRO (e))
+   
 
