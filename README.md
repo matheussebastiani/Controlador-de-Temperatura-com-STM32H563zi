@@ -152,3 +152,36 @@ Basicamente serão utilizados os pinos 10 (3A), 11 (3Y), 14 (4Y) e 15 (4A). Nos 
 
 >[!NOTE]
 >É necessário relembrar que os pinos de _enable_ do CI deverão ser acionados via _GPIOs_ do microcontrolador, caso o shield não ligue o pino internamente.
+
+## AQUECEDOR:
+Resistor (22 OHMS e 1/2 W) que irá fazer o papel do aquecedor no sistma.
+
+<p align="center">
+ <img src="" width="500">
+</p>
+
+Para não ultrapassar a potência nominal que o resistor em questão suporta, realizamos um cálculo...
+
+O resistor utilizado para aquecimento possui:
+- Resistência: **R = 22 Ω**
+- Potência nominal: **P = 0,5 W**
+
+A relação entre potência, tensão e resistência é dada por:
+
+**P = V² / R**
+
+Mudando a fórmula, temos que a tensão máxima que pode ser aplicada sem ultrapassar a potência nominal é:
+
+**Vmax = √(P · R)**
+
+Substituindo os valores:
+
+P · R = 0,5 × 22 = 11  
+Vmax = √11 ≈ **3,32 V**
+
+Portanto:
+
+**Tensão máxima permitida: 3,32 V**  
+**Corrente correspondente: I = 3,32 / 22 ≈ 0,1508 A**
+
+
