@@ -72,8 +72,8 @@ Será a tela principal do projeto, onde estarão concentradas as informações r
 2. PV (PROCESS VALUE): Valor atual da temperatura que será medido pelo sensor (LM35).
 3. HEAT: Estado do aquecedor (RESISTOR), se estará ligado ou desligado.
 4. FAN: Estado do ventilador, se estará ligado ou desligado.
-5. DRIVER: Estado do driver de saída, se esta habilitado (ON) ou desabilitado (OFF).
-6. KP: Valor do ganho porporcional do controlador.
+5. DRIVER: Estado do driver de saída, se está habilitado (ON) ou desabilitado (OFF).
+6. KP: Valor do ganho proporcional do controlador.
 
 Nessa primeira tela, o usuário deve ser capaz de interagir com os elementos acima da seguinte forma...
 
@@ -229,6 +229,8 @@ Na ocasião acima...
 
 >[!IMPORTANT]
 > Quando o driver estiver completamente DESABILITADO, ambas as saídas devem estar com 0% (DESLIGADO) e o led de HEART BEAT deve se manter acesso continuamente (ESSE ESTADO POSSUI PRIORIDADE DENTRE TODOS OS OUTROS).
-   
+
+## DESENHO ESQUEMÁTICO:
+
   
 
