@@ -215,5 +215,20 @@ Contendo agora todos os perifericos do projeto, podemos estipular uma logica par
    Na condição acima, o erro será negativo, a ação de aquecer não se torna necessária (PWM = 0), a intensidade do ventilador deve ser relacionada com o módulo do valor do erro (e) e o aquecedor deve se manter desligado.
 >[!NOTE]
 >EXEMPLO: SP = 40◦C, PV = 47◦C, o valor de (e) será  = −7◦C (DIANTE DISSO O SISTEMA DEVE LIGAR O VENTILADOR CONTENDO A POTÊNCIA EQUIVALENTE OU PROPORCIONAL AO ERRO (e))
+
+4. ZONA MORTA:
+   Foi observado que seria recomendado a implementação de uma "ZONA MORTA" pelo fato de que oscilações rápidas de temperatura pudessem ocorrer -> |SP - PV| < 0,5 ◦C
+   Para essa condição basicamente o ventilador e aquecedor mantém-se desligados e o sistema fica no aguardo de uma nova verificação.
+
+# MODO MANUAL:
+Nesse modo o próprio usuário tem controle do sistema de aquecer e ventilar.
+Na ocasião acima...
+1. O conntrolador proporcional (P) irá ser completamente ignorado.
+2. Apenas a saída que estiver ligada (ON) recebe o valor que for ajustado.
+3. Quando ambas as saídas estiverem ligadas (ON) os respectivos indicadores serão mostrados na interface de usuário (GUI).
+
+>[!IMPORTANT]
+> Quando o driver estiver completamente DESABILITADO, ambas as saídas devem estar com 0% (DESLIGADO) e o led de HEART BEAT deve se manter acesso continuamente (ESSE ESTADO POSSUI PRIORIDADE DENTRE TODOS OS OUTROS).
    
+  
 
