@@ -27,6 +27,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lm35.h"
+#include "nextion.h"
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -36,7 +39,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define CAIXA_TEXTO_PV "PV"
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -95,6 +98,9 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  nextion_init();
+  char buffer_temperatura[20];
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -103,6 +109,13 @@ int main(void)
   {
 	  HAL_Delay(2000);
 	  calculaTemperatura();
+
+	  memset(buffer_temperatura, 0, sizeof(buffer_temperatura));
+
+	  snprintf(buffer_temperatura, sizeof(buffer_temperatura), "%.2f", temperaturaAtual);
+
+	  nextion_set_component_text(CAIXA_TEXTO_PV, buffer_temperatura);
+
 	  HAL_Delay(2000);
 	  /* USER CODE END WHILE */
 
