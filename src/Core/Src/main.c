@@ -98,11 +98,13 @@ int main(void)
   MX_ICACHE_Init();
   MX_USART3_UART_Init();
   MX_TIM3_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 
   nextion_init();
   char buffer_temperatura[20];
   PWM_Init(&htim3, TIM_CHANNEL_1);
+  PWM_Init(&htim4, TIM_CHANNEL_1);
 
   /* USER CODE END 2 */
 
@@ -119,7 +121,7 @@ int main(void)
 
 	  nextion_set_component_text(CAIXA_TEXTO_PV, buffer_temperatura);
 
-	  //PWM_SetDutyCycle(duty_cicle);
+	  PWM_SetDutyCycle(duty_cicle);
 	  PWM_Resistor_SetDutyCycle(duty_cicle);
 
 	  HAL_Delay(2000);

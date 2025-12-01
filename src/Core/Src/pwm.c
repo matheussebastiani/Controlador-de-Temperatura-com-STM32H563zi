@@ -28,6 +28,7 @@ void PWM_Init(TIM_HandleTypeDef *htim, uint32_t canal){
  * 1. Receber um valor de Duty Cicle do padrão NEXTION
  * 2. Converter para o padrão de 3.3V = VMAX para o resistor
  * 3. Aplicar o valor no CCR do Timer
+ * Pino de saída desse PWM: PC6 (D16)
  */
 
 void PWM_Resistor_SetDutyCycle(float duty_percent_nextion){
@@ -53,12 +54,13 @@ void PWM_Resistor_SetDutyCycle(float duty_percent_nextion){
 
 /*
  * PWM Normal. Faz a mesma coisa que a de cima só que sem ajustar para Duty Max = 27,5%
- * Lembrar de alterar o timer futuramente
+ * Pino de saída desse PWM: PD12 (D29)
  */
+
 void PWM_SetDutyCycle(float duty_percent_nextion){
 	float ccr_float = 0.0f;
 	uint32_t ccr = 0;
-	uint32_t valor_arr = htim3.Instance->ARR;
+	uint32_t valor_arr = htim4.Instance->ARR;
 
 	if(duty_percent_nextion > PWM_MAX)
 		duty_percent_nextion = PWM_MAX;
@@ -68,7 +70,7 @@ void PWM_SetDutyCycle(float duty_percent_nextion){
 	ccr_float = (duty_percent_nextion / 100.0f) * (valor_arr + 1);
 	ccr = (uint32_t)(ccr_float); // Truncando o ccr para uint32_t
 
-	htim3.Instance->CCR1 = ccr; // Atualiza o valor do CCR1 para termos o Duty Cicle correto.
+	htim4.Instance->CCR1 = ccr; // Atualiza o valor do CCR1 para termos o Duty Cicle correto.
 
 }
 
