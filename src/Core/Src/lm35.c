@@ -33,7 +33,6 @@ float calculaTemperatura(){
 		HAL_ADC_Start(&hadc1);
 		HAL_ADC_PollForConversion(&hadc1, ADC_1_TIMEOUT);
 		tensaoLM35 += ADCtoVolts(&hadc1);
-
 		HAL_ADC_Stop(&hadc1);
 	}
 

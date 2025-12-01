@@ -20,7 +20,7 @@
 #define RESOLUCAO_ADC_LM35 		  4095.0f
 #define TENSAO_REFERENCIA_AD 	  3.3f
 #define FATOR_CONVERSAO_LM35_VOLS 100.0f		// Como 1°C = 10mV
-#define NUM_MEDICOES 			  10.0f
+#define NUM_MEDICOES 			  10.0
 
 /* Variáveis Exportadas */
 
