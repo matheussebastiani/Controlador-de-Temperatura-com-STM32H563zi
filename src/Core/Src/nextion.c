@@ -104,6 +104,12 @@ void nextion_parse_command(uint8_t *data, uint16_t size)
 		break;
 	}
 
+	// Para a recepção de valores de botao
+	// por algum motivo infernal, nao conseguimos fazer nosso proprio protocolo de mewnsagens via bytes especificos no
+	// nextion, entao vamos ter que fazer o seguinte
+	// 1. receber o evento de botao pressionado;
+	// 2. processar, e pedir o valor associado a ele. rsrsrsrsrsrsrsrs
+
 	}
 }
 
