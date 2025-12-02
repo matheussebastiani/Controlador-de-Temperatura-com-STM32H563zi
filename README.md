@@ -184,6 +184,45 @@ Portanto:
 **Tensão máxima permitida: 3,32 V**  
 **Corrente correspondente: I = 3,32 / 22 ≈ 0,1508 A**
 
+### Configuração do PWM para o Resistor
+
+O PWM para acionar o aquecedor foi configurado da seguinte maneira, buscando uma frequência de `fpwm = 20kHz`:
+
+```c
+#define PWM_RESISTOR_ARR 	 						2500-1
+#define PWM_RESISTOR_PSC 	 						5-1
+#define PWM_RESISTOR_CCR_MAX 						688
+
+#define FATOR_CONVERSAO_DUTY_PWM_RESISTOR_NEXTION  0.275f
+````
+
+No caso, o registrador `ARR` foi configurado para receber o valor de 2499, o `PSC` para 4, e o valor máximo do registrador `CCR` para 688.
+
+Como a tensão máxima do resistor pode chegar a apenas 3.3V, é necessário limitar o _Duty Cicle_ do PWM que controlará o driver L293D.
+
+Como:
+
+```
+Vmédia = Vmáx * Duty Cicle
+```
+Temos:
+
+```
+3.3 = 12 * Duty Cicle Máximo
+```
+
+```
+Duty Cicle Máximo = 0,275 ou 27,5%
+```
+
+Por conta disso, existe a definição da constante:
+
+```c
+#define FATOR_CONVERSAO_DUTY_PWM_RESISTOR_NEXTION  0.275f
+```
+
+Pois, para esse PWM, todo valor recebido pela função que o acionará, deverá ser multiplicado por essa constante para manter o valor máximo de tensão média igual a 3.3V.
+
 ## VENTILADOR:
 Será reproduzido por um motor DC, tendo como especificações os seguintes valores...
 1. Tensão de alimentação: 12 VDC
@@ -201,6 +240,8 @@ Será reproduzido por um motor DC, tendo como especificações os seguintes valo
 Contendo agora todos os perifericos do projeto, podemos estipular uma logica para que o acionamento das saídas utilizadas sejam feitas corretamente (AQUECEDOR, VENTILADOR).
 >[!IMPORTANT]
 >É válido recordar de que teremos 2 modos de operação, AUTOMÁTICO e MANUAL.
+
+
 
 # MODO AUTOMÁTICO:
 1. O controlador pessoal (P) que será responsável por determinar o valor de saáda, tendo em vista a diferença de SP e PV -> e(t) = SP - PV.
@@ -232,5 +273,5 @@ Na ocasião acima...
 
 ## DESENHO ESQUEMÁTICO:
 
-  
+
 

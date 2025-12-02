@@ -1,0 +1,11 @@
+../Core/Src/nextion.c:34:6:nextion_init	1
+../Core/Src/nextion.c:46:6:nex_send_cmd	1
+../Core/Src/nextion.c:56:6:nextion_get_active_page	1
+../Core/Src/nextion.c:62:6:HAL_UARTEx_RxEventCallback	3
+../Core/Src/nextion.c:77:6:nextion_parse_command	6
+../Core/Src/nextion.c:112:6:nextion_set_page	1
+../Core/Src/nextion.c:119:6:nextion_set_component_value	1
+../Core/Src/nextion.c:126:6:nextion_set_component_color	1
+../Core/Src/nextion.c:133:6:nextion_set_background_color	1
+../Core/Src/nextion.c:140:6:nextion_set_component_text	1
+../Core/Src/nextion.c:148:6:nextion_move_component	1

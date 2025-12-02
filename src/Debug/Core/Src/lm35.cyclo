@@ -1,0 +1,2 @@
+../Core/Src/lm35.c:27:7:calculaTemperatura	2
+../Core/Src/lm35.c:53:7:ADCtoVolts	1
