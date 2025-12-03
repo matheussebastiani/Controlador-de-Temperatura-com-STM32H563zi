@@ -58,6 +58,7 @@ void nextion_get_active_page()
 	nex_send_cmd("sendme");
 }
 
+
 // quando chegam novos dados na serial, este callback é chamado, os dados são processados, e o callback é reiniciado para permitir novas recepções
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
@@ -85,7 +86,7 @@ void nextion_parse_command(uint8_t *data, uint16_t size)
 
 	switch (command)
 	{
-	case 0x66: //pagina atual - estrutura: 0x66 + Page ID
+	case OPERACAO_NUMERO_PAGINA: //pagina atual - estrutura: 0x66 + Page ID
 	{
 		if (size >= 2)
 		{
@@ -93,7 +94,7 @@ void nextion_parse_command(uint8_t *data, uint16_t size)
 		}
 		break;
 	}
-	case 0x65: //// Touch Event - estrutura: 0x65 + Page ID + Component ID + Event (0x01 press, 0x00 release)
+	case OPERACAO_EVENTO_TOQUE: //// Touch Event - estrutura: 0x65 + Page ID + Component ID + Event (0x01 press, 0x00 release)
 	{
 		if (size >= 2)
 		{
@@ -103,6 +104,13 @@ void nextion_parse_command(uint8_t *data, uint16_t size)
 		}
 		break;
 	}
+	case OPERACAO_RETORNO_VALOR_NUMERICO:
+
+		if(size >= 2){
+			nextion_ihm.touch_event = data[1];
+
+		}
+		break;
 
 	// Para a recepção de valores de botao
 	// por algum motivo infernal, nao conseguimos fazer nosso proprio protocolo de mewnsagens via bytes especificos no
@@ -158,4 +166,11 @@ void nextion_move_component(const char *component_name, int16_t x, int16_t y)
     nex_send_cmd(cmd);
     snprintf(cmd, sizeof(cmd), "%s.y=%u", component_name, y);
     nex_send_cmd(cmd);
+}
+
+void nextion_get_component_value(const char *component_name){
+
+	char cmd[30];
+	snprintf(cmd, sizeof(cmd), "get %s.val", component_name);
+	nex_send_cmd(cmd);
 }
