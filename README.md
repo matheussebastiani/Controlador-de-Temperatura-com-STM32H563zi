@@ -273,5 +273,21 @@ Na ocasião acima...
 
 ## DESENHO ESQUEMÁTICO:
 
+---
+
+## Documentação - Comunicação NEXTION + STM32
+
+O display da Nextion possui um protocolo definido de mensagens, e a possibilidade de programar mensagens quando determinados eventos acontecem, como por exemplo, quando um botão é pressionado. O Nextion possui um protocolo definido para a recepção de mensagens via serial, para então, responder o que o transmissor da mensagem deseja conhecer.
+
+Na [documentação do Nextion](https://wiki.iteadstudio.com/Nextion_Instruction_Set#page:_Refresh_page), é possível encontrar o "cabeçalho" de suas mensagens. O cabeçalho seria basicamente o primeiro byte de uma série de bytes enviados pelo Nextion. Cada byte, possui um significado, e, consequentemente, uma formatação.
+
+Mensagens de evento de toque, por exemplo, possuem mais bytes do que mensagens de páginas ativas. É possível customizar a forma com que o Nextion reporta determinados eventos ocorridos em sua execução, mas nem sempre isso é possível.
+
+Por conta disso, é necessário que exista uma camada de abstração que simplifique isso e deixe o firmware mais limpo, funcional e escalável.
+
+Essa abstração pode ser implementada com uma Máquina de Estados Finitos, sendo cada "tipo de evento" reportado pelo, ou solicitado para o Nextion, um estado, possibilitando uma maneira mais simples e organizada de tratar as mensagens vindas do Nextion.
+
+Podemos mapear os principais eventos ocorridos entre o Nextion e o STM32 como:
+
 
 
