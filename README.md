@@ -341,21 +341,21 @@ No caso, as possibilidades mapeadas foram:
    ```
 5. Trocar página de AUTOMÁTICO para MANUAL:
    ```c
-   page MANUAL
    printh F0
-   printh MANUAL
+   printh 01
    printh FF
    printh FF
    printh FF
+   page MANUAL
    ```
 6. Trocar página de MANUAL para AUTOMÁTICO:
    ```c
-   page AUTOMATICO
    printh F1
-   printh AUTOMATICO
+   printh 00
    printh FF
    printh FF
    printh FF
+   page AUTOMATICO
    ```
  ### SLIDERS:
 1. Confirmar envio do HEATER (EM %):
@@ -401,6 +401,7 @@ No caso, as possibilidades mapeadas foram:
    ```c
    DRIVER_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DRIVER_STATE.txt=\"ON\"\xFF\xFF\xFF
    ```
+
 
 
 
