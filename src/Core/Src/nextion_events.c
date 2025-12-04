@@ -17,9 +17,12 @@ Nextion_event_t NextionEvent;
 /*	Inicia a fila com first e last em -1	*/
 void event_queue_init(Nextion_EventQueue_t *queue){
 
+	__disable_irq(); // Desliga interrupções (concorrencia)
+
 	queue->first = -1;
 	queue->last = -1;
 
+	__enable_irq(); // Habilita novamente
 }
 
 /* Função que enfileira um evento. Como vamos trabalhar com uma fila circular, vamos recusar eventos caso a fila esteja cheia (dificilmente estará)
@@ -28,7 +31,7 @@ void event_queue_init(Nextion_EventQueue_t *queue){
  * Se não estiver cheia, incrementa o last (lembrando que é circular) e insere o evento no final da fila
  */
 
-int event_enqueue(Nextion_EventQueue_t *queue, Nextion_event_t *evento){
+int event_enqueue(Nextion_EventQueue_t *queue, Nextion_event_t *evento){ // Usado pelo tratador de interrupções, não precisa desabilitar interrupções
 
 	if(isQueueFull(queue)){
 		return -1;
@@ -46,13 +49,15 @@ int event_enqueue(Nextion_EventQueue_t *queue, Nextion_event_t *evento){
 
 }
 
-Nextion_event_t* event_dequeue(Nextion_EventQueue_t *queue){
+Nextion_event_t* event_dequeue(Nextion_EventQueue_t *queue){ // Utilizada pelo controle principal -> necessário desabilitar interrupções
 
 	Nextion_event_t* evento;
 
 	if(isQueueEmpty(queue)){ // Underflow
 		return NULL;
 	}
+
+	__disable_irq();
 
 	evento = &queue->event_queue[queue->first];
 
@@ -62,6 +67,8 @@ Nextion_event_t* event_dequeue(Nextion_EventQueue_t *queue){
 
 		queue->first = (queue->first + 1) % TAMANHO_MAXIMO_FILA;
 	}
+
+	__enable_irq();
 
 	return evento;
 
