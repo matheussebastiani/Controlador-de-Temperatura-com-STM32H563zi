@@ -315,15 +315,7 @@ No caso, as possibilidades mapeadas foram:
     printh FF
     printh FF
     ```
- 2. Confirmar envio do KP:
-    ```c
-    printh 20
-    print KP.val
-    printh FF
-    printh FF
-    printh FF
-    ```
-3. Ligar ou desligar o DRIVER:
+2. Ligar ou desligar o DRIVER:
    ```c
    printh 50
    print DRIVER_ONOFF.val
@@ -331,7 +323,7 @@ No caso, as possibilidades mapeadas foram:
    printh FF
    printh FF
    ```
-4. Ligar ou desligar o HEATER:
+3. Ligar ou desligar o HEATER:
    ```c
    printh 55
    print H_ONOFF.val
@@ -339,7 +331,7 @@ No caso, as possibilidades mapeadas foram:
    printh FF
    printh FF
    ```
-5. Ligar ou desligar o FAN:>
+4. Ligar ou desligar o FAN:
    ```c
    printh 56
    print F_ONOFF.val
@@ -347,7 +339,7 @@ No caso, as possibilidades mapeadas foram:
    printh FF
    printh FF
    ```
-6. Trocar página de AUTOMÁTICO para MANUAL:
+5. Trocar página de AUTOMÁTICO para MANUAL:
    ```c
    page MANUAL
    printh F0
@@ -356,7 +348,7 @@ No caso, as possibilidades mapeadas foram:
    printh FF
    printh FF
    ```
-7. Trocar página de MANUAL para AUTOMÁTICO:
+6. Trocar página de MANUAL para AUTOMÁTICO:
    ```c
    page AUTOMATICO
    printh F1
@@ -382,6 +374,14 @@ No caso, as possibilidades mapeadas foram:
    printh FF
    printh FF
    ```
+3. Confirmar envio do KP:
+    ```c
+    printh 20
+    print KP.val
+    printh FF
+    printh FF
+    printh FF
+    ```
 ## RECEBIMENTO DE DADOS DO MCU PARA O NEXTION...
 ### VALOR NÚMERICO:
 1. Para o PROCESS_VALUE (PV):
@@ -401,5 +401,6 @@ No caso, as possibilidades mapeadas foram:
    ```c
    DRIVER_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DRIVER_STATE.txt=\"ON\"\xFF\xFF\xFF
    ```
+
 
 
