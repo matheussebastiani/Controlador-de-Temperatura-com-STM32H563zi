@@ -1,5 +1,5 @@
 ../Core/Src/nextion_events.c:18:6:event_queue_init	1
-../Core/Src/nextion_events.c:31:5:event_enqueue	3
-../Core/Src/nextion_events.c:49:18:event_dequeue	3
-../Core/Src/nextion_events.c:70:6:isQueueFull	2
-../Core/Src/nextion_events.c:80:6:isQueueEmpty	1
+../Core/Src/nextion_events.c:34:5:event_enqueue	3
+../Core/Src/nextion_events.c:52:18:event_dequeue	3
+../Core/Src/nextion_events.c:77:6:isQueueFull	2
+../Core/Src/nextion_events.c:87:6:isQueueEmpty	1
