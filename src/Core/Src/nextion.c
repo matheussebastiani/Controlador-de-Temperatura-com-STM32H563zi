@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "usart.h"
+#include "nextion_events.h"
 
 /************************************************************************************************/
 /**************** Mudar a porta serial utilzada pela ihm nextion aqui!!! ************************/
@@ -30,6 +31,7 @@ uint8_t nextion_rx_buffer[NEXTION_RX_BUFFER_SIZE];
 
 nextion_ihm_t nextion_ihm;
 
+
 // inicializa a interface, deve ser chamada antes do envio de comandos.
 void nextion_init()
 {
@@ -40,6 +42,9 @@ void nextion_init()
 	nextion_ihm.touch_event.component_id = -1;
 	nextion_ihm.touch_event.event_type = -1;
 	nextion_ihm.touch_event.page_id = -1;
+
+	NextionEvent.event = -1;
+	NextionEvent.value = -1;
 }
 
 // envia comandos para a ihm, coloca o terminador ff ff ff de forma automática ao final do comando.
@@ -84,39 +89,86 @@ void nextion_parse_command(uint8_t *data, uint16_t size)
 	// consultar: https://wiki.iteadstudio.com/Nextion_Instruction_Set#page:_Refresh_page
 	// para obter a lista de comandos validos
 
-	switch (command)
-	{
-	case OPERACAO_NUMERO_PAGINA: //pagina atual - estrutura: 0x66 + Page ID
-	{
-		if (size >= 2)
+	switch (command){
+
+		case MSG_NEXTION_ENVIO_VALOR_SP:
 		{
-			nextion_ihm.active_page = data[1];
+			NextionEvent.event = EVENT_CONFIRM_SP;
+			NextionEvent.value = data[1]; 			// Byte onde se encontrará o valor do SP
+
+			break;
 		}
-		break;
-	}
-	case OPERACAO_EVENTO_TOQUE: //// Touch Event - estrutura: 0x65 + Page ID + Component ID + Event (0x01 press, 0x00 release)
-	{
-		if (size >= 2)
+
+		case MSG_NEXTION_ENVIO_VALOR_KP:
 		{
-			nextion_ihm.touch_event.page_id = data[1];
-			nextion_ihm.touch_event.component_id = data[2];
-			nextion_ihm.touch_event.event_type = data[1];
+			NextionEvent.event = EVENT_CONFIRM_KP;
+			NextionEvent.value = data[1];
+
+			break;
 		}
-		break;
-	}
-	case OPERACAO_RETORNO_VALOR_NUMERICO:
 
-		if(size >= 2){
-			nextion_ihm.touch_event = data[1];
+		case MSG_NEXTION_ESTADO_DRIVER:
+		{
+			NextionEvent.event = EVENT_TOGGLE_DRIVER;
+			NextionEvent.value = data[1];
+
+			break;
+		}
+
+		case MSG_NEXTION_ESTADO_HEATER:
+		{
+			NextionEvent.event = EVENT_TOGGLE_HEATER;
+			NextionEvent.value = data[1];
+
+			break;
 
 		}
-		break;
 
-	// Para a recepção de valores de botao
-	// por algum motivo infernal, nao conseguimos fazer nosso proprio protocolo de mewnsagens via bytes especificos no
-	// nextion, entao vamos ter que fazer o seguinte
-	// 1. receber o evento de botao pressionado;
-	// 2. processar, e pedir o valor associado a ele. rsrsrsrsrsrsrsrs
+		case MSG_NEXTION_ESTADO_FAN:
+		{
+			NextionEvent.event = EVENT_TOGGLE_FAN;
+			NextionEvent.value = data[1];
+
+			break;
+		}
+
+		case MSG_NEXTION_PAGINA_MANUAL:
+		{
+			NextionEvent.event = EVENT_PAGE_MANUAL;
+			NextionEvent.value = data[1];
+
+			break;
+		}
+
+		case MSG_NEXTION_PAGINA_AUTOMATICO:
+		{
+			NextionEvent.event = EVENT_PAGE_AUTO;
+			NextionEvent.value = data[1];
+
+			break;
+		}
+
+		case MSG_NEXTION_DT_HEATER:
+		{
+			NextionEvent.event = EVENT_CONFIRM_HEATER_VALUE;
+			NextionEvent.value = data[1];
+
+			break;
+		}
+
+		case MSG_NEXTION_DT_FAN:
+		{
+			NextionEvent.event = EVENT_CONFIRM_FAN_VALUE;
+			NextionEvent.value = data[1];
+
+			break;
+		}
+
+		default:
+			NextionEvent.event = EVENT_NONE;
+			NextionEvent.value = -1;
+			break;
+
 
 	}
 }
