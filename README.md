@@ -305,32 +305,101 @@ Por exemplo, quando o usuário selecionar, no modo automático, o valor de _Set 
 
 No caso, as possibilidades mapeadas foram:
 
-```
-PARA O CONFIRM DO SP: printh 10; print SP.val; printh FF 3x
+## ENVIO DE DADOS DO NEXTION PARA O MCU...
+### BOTÕES:
+ 1. Confirmar envio do SP:
+    ```c
+    printh 10
+    print SP.val
+    printh FF
+    printh FF
+    printh FF
+    ```
+ 2. Confirmar envio do KP:
+    ```c
+    printh 20
+    print KP.val
+    printh FF
+    printh FF
+    printh FF
+    ```
+3. Ligar ou desligar o DRIVER:
+   ```c
+   printh 50
+   print DRIVER_ONOFF.val
+   printh FF
+   printh FF
+   printh FF
+   ```
+4. Ligar ou desligar o HEATER:
+   ```c
+   printh 55
+   print H_ONOFF.val
+   printh FF
+   printh FF
+   printh FF
+   ```
+5. Ligar ou desligar o FAN:>
+   ```c
+   printh 56
+   print F_ONOFF.val
+   printh FF
+   printh FF
+   printh FF
+   ```
+6. Trocar página de AUTOMÁTICO para MANUAL:
+   ```c
+   page MANUAL
+   printh F0
+   printh MANUAL
+   printh FF
+   printh FF
+   printh FF
+   ```
+7. Trocar página de MANUAL para AUTOMÁTICO:
+   ```c
+   page AUTOMATICO
+   printh F1
+   printh AUTOMATICO
+   printh FF
+   printh FF
+   printh FF
+   ```
+ ### SLIDERS:
+1. Confirmar envio do HEATER (EM %):
+   ```c
+   printh 5
+   print H_VALUE.val
+   printh FF
+   printh FF
+   printh FF
+   ```
+2. Confirmar envio do FAN (EM %):
+   ```c
+   printh 4
+   print F_VALUE.val
+   printh FF
+   printh FF
+   printh FF
+   ```
+## RECEBIMENTO DE DADOS DO MCU PARA O NEXTION...
+### VALOR NÚMERICO:
+1. Para o PROCESS_VALUE (PV):
+   ```c
+   PV.val=<VALOR LIDO PELO MICRO> -> PV.val=255\xFF\xFF\xFF
+   ```
+### TEXTO:
+1. Para o estado do FAN:
+   ```c
+   FAN_STATE.txt-"<TEXTO A PARTIR DO MICRO>" -> FAN_STATE.txt=\"ON\"\xFF\xFF\xFF
+   ```
+2. Para o estado do HEATER:
+   ```c
+   HEAT_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> HEAT_STATE.txt=\"ON\"\xFF\xFF\xFF
+   ```
+3. Para o estado do DRIVER:
+   ```c
+   DRIVER_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DRIVER_STATE.txt=\"ON\"\xFF\xFF\xFF
+   ```
 
-PARA O CONFIRM DO KP:  printh 20; print KP.val; printh FF 3x
 
-PARA O BOTAO TOGGLE DO DRIVER: printh 50; print DRIVER_ONOFF.val; printh FF 3x
-
-PARA O BOTAO DE TROCAR A PAGINA NO MODO AUTOMATICO PARA MANUAL: page MANUAL; printh F0; printh MANUAL.; printh FF 3x
-
-PARA O BOTAO DE TROCAR A PAGINA NO MODO MANUAL PARA AOTUOMATICO: page AUTOMATICO; printh F1, printh AUTOMATICO, printh FF 3x
-
-PARA O CONFIRM DO H_VALUE: printh 5; print H_VALUE.val; printh FF 3x
-
-PARA O CONFIRM DO F_VALUE: printh 4; printh F_VALUE.val; printh FF 3x
-
-PARA O TOGGLE DO AQUECEDOR: printh 55; print H_ONOFF.val; printh FF 3x
-
-PARA O TOGGLE DO VENTILADOR: printh 56; print F_ONOFF.val; prith FF 3x
-
-Para quando o mcu for enviar algo para a gui é preciso usar esses comandos aqui, vamos adaptanmdo conforme for preciso:
-
-PARA PV: PV.VAL=<VALOR LIDO PELO MICRO> -> DEVE CHEGAR ASSIM NO NEXTION: PV.val=255\xFF\xFF\xFF
-
-PARA O ESTADO DO FAN: FAN_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DEVE CHEGAR ASSIM NO NEXTION: FAN_STATE.txt=\"ON\"\xFF\xFF\xFF
-
-PARA O STATUS DO DRIVER: DRIVER_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DEVE CHEGAR ASSIM NO NEXTION: DRIVER_STATE.txt=\"ON\"\xFF\xFF\xFF
-
-PARA O STATUS DO AQUECEDOR: HEAT_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DEVE CHEGAR ASSIM NO NEXTION: HEAT_STATE.txt=\"ON\"\xFF\xFF\xFF
-```
