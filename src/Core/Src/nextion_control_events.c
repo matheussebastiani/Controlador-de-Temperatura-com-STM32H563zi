@@ -56,46 +56,46 @@ void Nextion_controle_eventos_init(void)
 void Nextion_controle_eventos_run(void)
 {
 	//tentando buscar evento na fila circular
-	Nextion_event_t* evento = event_dequeue(&FilaEventos);
+	Nextion_event_t evento = event_dequeue(&FilaEventos);
 
 	//se nao houver um evento
-	if (evento == NULL){
+	if (evento.event == -1 && evento.value == -1){
 		return;
 	}
 
 	if(EstadoAtual == STATE_PADRAO)
-		nextion_handle_estado_padrao(evento);
+		nextion_handle_estado_padrao(&evento);
 
 	//agora sim iremos passar o evneto para o handler correto
 	switch (EstadoAtual)
 	{
 
 	case STATE_ESPERA_SP:
-		nextion_handle_estado_sp(evento);
+		nextion_handle_estado_sp(&evento);
 		break;
 
 	case STATE_ESPERA_KP:
-		nextion_handle_estado_kp(evento);
+		nextion_handle_estado_kp(&evento);
 		break;
 
 	case STATE_CONTROLE_DRIVER:
-		nextion_handle_estado_driver(evento);
+		nextion_handle_estado_driver(&evento);
 		break;
 
 	case STATE_CONTROLE_AQUECEDOR:
-		nextion_handle_estado_aquecedor(evento);
+		nextion_handle_estado_aquecedor(&evento);
 		break;
 
 	case STATE_CONTROLE_FAN:
-		nextion_handle_estado_fan(evento);
+		nextion_handle_estado_fan(&evento);
 		break;
 
 	case STATE_PAGINA_MANUAL:
-		nextion_handle_estado_page_manual(evento);
+		nextion_handle_estado_page_manual(&evento);
 		break;
 
 	case STATE_PAGINA_AUTOMATICO:
-		nextion_handle_estado_page_automatico(evento);
+		nextion_handle_estado_page_automatico(&evento);
 		break;
 
 	default:

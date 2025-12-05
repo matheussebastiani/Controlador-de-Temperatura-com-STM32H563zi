@@ -27,25 +27,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000036  00000000  00000000  000131d4  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0001b223  00000000  00000000  0001320a  2**0
+ 12 .debug_info   0001b237  00000000  00000000  0001320a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 000034fc  00000000  00000000  0002e42d  2**0
+ 13 .debug_abbrev 000034f4  00000000  00000000  0002e441  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 000015b8  00000000  00000000  00031930  2**3
+ 14 .debug_aranges 000015b8  00000000  00000000  00031938  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 000010b9  00000000  00000000  00032ee8  2**0
+ 15 .debug_rnglists 000010ba  00000000  00000000  00032ef0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00035dff  00000000  00000000  00033fa1  2**0
+ 16 .debug_macro  00036181  00000000  00000000  00033faa  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0001de8d  00000000  00000000  00069da0  2**0
+ 17 .debug_line   0001e236  00000000  00000000  0006a12b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0015771c  00000000  00000000  00087c2d  2**0
+ 18 .debug_str    00157783  00000000  00000000  00088361  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  001df349  2**0
+ 19 .comment      00000043  00000000  00000000  001dfae4  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00007188  00000000  00000000  001df38c  2**2
+ 20 .debug_frame  0000718c  00000000  00000000  001dfb28  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 000000a3  00000000  00000000  001e6514  2**0
+ 21 .debug_line_str 000000e6  00000000  00000000  001e6cb4  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2316,11 +2316,12 @@ void nextion_parse_command(uint8_t *data, uint16_t size)
  80016ac:	4b05      	ldr	r3, [pc, #20]	@ (80016c4 <nextion_parse_command+0x1ac>)
  80016ae:	f04f 32ff 	mov.w	r2, #4294967295
  80016b2:	605a      	str	r2, [r3, #4]
-			break;
+			return;
  80016b4:	e000      	b.n	80016b8 <nextion_parse_command+0x1a0>
 		return;
  80016b6:	bf00      	nop
 
+		event_enqueue(&FilaEventos, NextionEvent);
 
 	}
 }

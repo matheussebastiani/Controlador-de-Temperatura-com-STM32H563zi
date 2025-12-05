@@ -169,7 +169,7 @@ void nextion_parse_command(uint8_t *data, uint16_t size)
 			NextionEvent.value = -1;
 			return;
 
-		event_enqueue(&FilaEventos, command);
+		event_enqueue(&FilaEventos, NextionEvent);
 
 	}
 }

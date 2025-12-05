@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include "stm32h5xx.h" // Funções de desabilitar interrupções
 
 Nextion_event_t NextionEvent;
 Nextion_EventQueue_t FilaEventos;
@@ -30,9 +31,10 @@ void event_queue_init(Nextion_EventQueue_t *queue){
  * Relembrando a lógica do enqueue:
  * Checa se a fila está cheia (evitar Overflow)
  * Se não estiver cheia, incrementa o last (lembrando que é circular) e insere o evento no final da fila
+ * Necessário PASSAR UMA CÓPIA
  */
 
-int event_enqueue(Nextion_EventQueue_t *queue, Nextion_event_t *evento){ // Usado pelo tratador de interrupções, não precisa desabilitar interrupções
+int event_enqueue(Nextion_EventQueue_t *queue, Nextion_event_t evento){ // Usado pelo tratador de interrupções, não precisa desabilitar interrupções
 
 	if(isQueueFull(queue)){
 		return -1;
@@ -44,23 +46,25 @@ int event_enqueue(Nextion_EventQueue_t *queue, Nextion_event_t *evento){ // Usad
 
 	queue->last = (queue->last + 1) % TAMANHO_MAXIMO_FILA;
 
-	queue->event_queue[queue->last] = *evento;
+	queue->event_queue[queue->last] = evento;
 
 	return 1;
 
 }
 
-Nextion_event_t* event_dequeue(Nextion_EventQueue_t *queue){ // Utilizada pelo controle principal -> necessário desabilitar interrupções
+Nextion_event_t event_dequeue(Nextion_EventQueue_t *queue){ // Utilizada pelo controle principal -> necessário desabilitar interrupções
 
-	Nextion_event_t* evento;
+	Nextion_event_t evento;
 
 	if(isQueueEmpty(queue)){ // Underflow
-		return NULL;
+		evento.event = EVENT_NONE;
+		evento.value = -1;
+		return evento;
 	}
 
 	__disable_irq();
 
-	evento = &queue->event_queue[queue->first];
+	evento = queue->event_queue[queue->first];
 
 	if(queue->first == queue->last){ // Significa que agora a fila ficou vazia!!
 		queue->first = queue->last = -1;

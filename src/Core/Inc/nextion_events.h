@@ -88,9 +88,9 @@ extern Nextion_EventQueue_t FilaEventos;
 
 void event_queue_init(Nextion_EventQueue_t *queue);
 
-int event_enqueue(Nextion_EventQueue_t *queue,Nextion_event_t *evento);
+int event_enqueue(Nextion_EventQueue_t *queue, Nextion_event_t evento);
 
-Nextion_event_t* event_dequeue(Nextion_EventQueue_t *queue);
+Nextion_event_t event_dequeue(Nextion_EventQueue_t *queue);
 
 bool isQueueFull(Nextion_EventQueue_t *queue);
 
