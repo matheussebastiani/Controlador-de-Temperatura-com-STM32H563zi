@@ -152,6 +152,7 @@ static void nextion_handle_estado_sp(Nextion_event_t *evento){
 	{
 	case EVENT_CONFIRM_SP:
 		InfosControlador.sp = evento->value;
+		nextion_atualiza_sp(InfosControlador.sp);
 		break;
 
 	default:
@@ -165,6 +166,7 @@ static void nextion_handle_estado_kp(Nextion_event_t *evento){
 	{
 	case EVENT_CONFIRM_KP:
 		InfosControlador.kp = evento->value;
+		nextion_atualiza_kp(InfosControlador.kp);
 		break;
 
 	default:
@@ -182,6 +184,8 @@ static void nextion_handle_estado_driver(Nextion_event_t *evento){
 
 		else if (InfosControlador.pag_atual == PAGINA_MANUAL) // No modo manual, o driver está sempre ligado
 			InfosControlador.driver_on = LIGADO;
+
+		nextion_atualiza_driver(InfosControlador.driver_on);
 	}
 	EstadoAtual = STATE_PADRAO;
 }
@@ -195,13 +199,15 @@ static void nextion_handle_estado_aquecedor(Nextion_event_t *evento){
             		InfosControlador.heater_on = evento->value;
             	else if(InfosControlador.pag_atual == PAGINA_AUTOMATICO)
             		InfosControlador.heater_on = LIGADO;
+            	nextion_atualiza_aquecedor(InfosControlador.heater_on);
             break;
 
         case EVENT_CONFIRM_HEATER_VALUE:            //CONSIDERAR QUE O VALOR PODE ESTAR SENDO ALTERADO MESMO COM O DRIVER DESLIGADO NA INTERFACE
 
-        	if(InfosControlador.pag_atual == PAGINA_MANUAL) // Apenas necessita de confirmação na página manual. Na parte automática, não mexe
+        	if(InfosControlador.pag_atual == PAGINA_MANUAL){ // Apenas necessita de confirmação na página manual. Na parte automática, não mexe
         		InfosControlador.heater_dt = evento->value;
-
+        		nextion_atualiza_aquecedor_dt(InfosControlador.heater_dt);
+        	}
         	break;
 
         default:
@@ -222,6 +228,7 @@ static void nextion_handle_estado_fan(Nextion_event_t *evento){
 		} else if(InfosControlador.pag_atual == PAGINA_AUTOMATICO){
 			InfosControlador.fan_on = LIGADO;
 		}
+		nextion_atualiza_fan(InfosControlador.fan_on);
 
 		break;
 
@@ -229,6 +236,7 @@ static void nextion_handle_estado_fan(Nextion_event_t *evento){
 
 		if(InfosControlador.pag_atual == PAGINA_MANUAL){ // Apenas mexe no duty cicle se for no modo manual
 			InfosControlador.fan_dt = evento->value;
+			nextion_atualiza_fan_dt(InfosControlador.fan_dt);
 		}
 
 		break;
@@ -271,6 +279,14 @@ static void nextion_handle_estado_page_manual(Nextion_event_t *evento){
 
 		nextion_set_component_value(NEXTION_OBJNAME_PV, InfosControlador.pv); // Já envia ao Nextion a temperatura atual
 
+		//chama as funcoes para inicializar a pagina de acordo com o estipulado (valores iniciais)
+		nextion_atualiza_driver(InfosControlador.driver_on);
+		nextion_atualiza_aquecedor(InfosControlador.heater_on);
+		nextion_atualiza_fan(InfosControlador.fan_on);
+
+		nextion_atualiza_aquecedor_dt(InfosControlador.heater_dt);
+		nextion_atualiza_fan_dt(InfosControlador.fan_dt);
+
 		EstadoAtual = STATE_PADRAO;
 		break;
 
@@ -301,6 +317,13 @@ static void nextion_handle_estado_page_automatico(Nextion_event_t *evento){
 		InfosControlador.sp = VALOR_INICIAL_SP;
 
 		nextion_set_component_value(NEXTION_OBJNAME_PV, InfosControlador.pv); // Já envia ao Nextion a temperatura atual
+
+		nextion_atualiza_sp(InfosControlador.sp);
+		nextion_atualiza_kp(InfosControlador.kp);
+
+		nextion_atualiza_driver(InfosControlador.driver_on);
+		nextion_atualiza_fan(InfosControlador.fan_on);
+		nextion_atualiza_aquecedor(InfosControlador.heater_on);
 
 
 		EstadoAtual = STATE_PADRAO;
