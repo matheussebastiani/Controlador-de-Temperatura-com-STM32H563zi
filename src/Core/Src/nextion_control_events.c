@@ -197,7 +197,7 @@ static void nextion_handle_estado_aquecedor(Nextion_event_t *evento){
             		InfosControlador.heater_on = LIGADO;
             break;
 
-        case EVENT_CONFIRM_HEATER_VALUE:
+        case EVENT_CONFIRM_HEATER_VALUE:            //CONSIDERAR QUE O VALOR PODE ESTAR SENDO ALTERADO MESMO COM O DRIVER DESLIGADO NA INTERFACE
 
         	if(InfosControlador.pag_atual == PAGINA_MANUAL) // Apenas necessita de confirmação na página manual. Na parte automática, não mexe
         		InfosControlador.heater_dt = evento->value;
@@ -225,7 +225,7 @@ static void nextion_handle_estado_fan(Nextion_event_t *evento){
 
 		break;
 
-	case EVENT_CONFIRM_FAN_VALUE:
+	case EVENT_CONFIRM_FAN_VALUE:                    //CONSIDERAR QUE O VALOR PODE ESTAR SENDO ALTERADO MESMO COM O DRIVER DESLIGADO NA INTERFACE
 
 		if(InfosControlador.pag_atual == PAGINA_MANUAL){ // Apenas mexe no duty cicle se for no modo manual
 			InfosControlador.fan_dt = evento->value;
