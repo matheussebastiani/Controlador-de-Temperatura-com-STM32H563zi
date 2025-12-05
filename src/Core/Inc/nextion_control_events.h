@@ -45,6 +45,7 @@
 #define VALOR_INICIAL_SP 	 	-1
 #define VALOR_INICIAL_KP 	 	-1
 #define VALOR_INICIAL_PV 	 	-1
+#define VALOR_INICIAL_ERRO		-1
 #define PAGINA_INICIAL 	  	  	 PAGINA_AUTOMATICO
 #define ESTADO_INICIAL_DRIVER 	 DESLIGADO
 #define ESTADO_INICIAL_AQUECEDOR DESLIGADO
@@ -88,6 +89,8 @@ typedef struct{
 	int8_t heater_dt;		/* Porcentagem informada no display para o PWM do heater no modo manual */
 
 	int8_t modo_seguranca; 	/* Indica se o modo de segurança está setado ou não. Será utilizado apenas na transição de modos de operação	*/
+
+	int8_t erro;			/* Indica a diferença entre SP e PV	*/
 
 } Controlador_Temp_Infos_t;
 

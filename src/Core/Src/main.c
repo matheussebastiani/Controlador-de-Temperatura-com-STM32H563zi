@@ -113,25 +113,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	 // HAL_Delay(2000);
-	  //calculaTemperatura();
 
-	  //memset(buffer_temperatura, 0, sizeof(buffer_temperatura));
 
-	  //snprintf(buffer_temperatura, sizeof(buffer_temperatura), "%.2f", temperaturaAtual);
-
-	 // nextion_set_component_text(CAIXA_TEXTO_PV, buffer_temperatura);
-
-	  //PWM_SetDutyCycle(duty_cicle);
-	  //PWM_Resistor_SetDutyCycle(duty_cicle);
-
-	  //nextion_get_active_page();
-
-	  nextion_get_component_value("SP");
-
-	 // HAL_Delay(2000);
-
-	//  PWM_Stop(&htim3, TIM_CHANNEL_1);
 
 
     /* USER CODE END WHILE */

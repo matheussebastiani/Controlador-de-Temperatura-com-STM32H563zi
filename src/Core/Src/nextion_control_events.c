@@ -36,6 +36,7 @@ void Nextion_controle_eventos_init(void)
 	InfosControlador.sp = VALOR_INICIAL_SP;
 	InfosControlador.pv = VALOR_INICIAL_PV;
 	InfosControlador.kp = VALOR_INICIAL_KP;
+	InfosControlador.erro = VALOR_INICIAL_ERRO;
 
 	InfosControlador.pag_atual = PAGINA_INICIAL;
 
