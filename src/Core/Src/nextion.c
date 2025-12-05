@@ -167,8 +167,9 @@ void nextion_parse_command(uint8_t *data, uint16_t size)
 		default:
 			NextionEvent.event = EVENT_NONE;
 			NextionEvent.value = -1;
-			break;
+			return;
 
+		event_enqueue(&FilaEventos, command);
 
 	}
 }

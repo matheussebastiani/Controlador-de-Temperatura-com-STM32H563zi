@@ -6,13 +6,14 @@
  */
 #include "nextion_control_events.h"
 #include "nextion_events.h"
+#include "nextion.h"
 #include <stdio.h>
 
 //nesse arquio esta toda a logica de funcionamento das funcoes delcaradas no arquivo HEADER, ira interpretar os evntos
 //recebidos do nextion e ira decidir qual decisrao ira tomar
 
 EstadoSistema_t EstadoAtual;
-Nextion_EventQueue_t EventQueue;
+Controlador_Temp_Infos_t InfosControlador;
 
 //abaixo estao definidos os HANDLERS ou os MANIPULADORES intenrnos para os eventos
 static void nextion_handle_estado_padrao(Nextion_event_t *evento);
@@ -26,9 +27,27 @@ static void nextion_handle_estado_page_automatico(Nextion_event_t *evento);
 
 
 //inicializacao do estado da maquinda (estado inicial)
-void Nextion__controle_eventos_init(void)
+void Nextion_controle_eventos_init(void)
 {
 	EstadoAtual = STATE_PADRAO;
+
+	/* Inicialização da estrutura principal de controle	*/
+
+	InfosControlador.sp = VALOR_INICIAL_SP;
+	InfosControlador.pv = VALOR_INICIAL_PV;
+	InfosControlador.kp = VALOR_INICIAL_KP;
+
+	InfosControlador.pag_atual = PAGINA_INICIAL;
+
+	InfosControlador.driver_on = ESTADO_INICIAL_DRIVER;
+	InfosControlador.fan_on = ESTADO_INICIAL_FAN;
+	InfosControlador.heater_on = ESTADO_INICIAL_AQUECEDOR;
+
+	InfosControlador.fan_dt = DT_PWM_INICIAL_FAN;
+	InfosControlador.heater_dt = DT_PWM_INICIAL_AQUECEDOR;
+
+	InfosControlador.modo_seguranca = MODO_SEGURANCA_INICIAL;
+
 }
 
 //a funcao abaixo de controle deve ser chamada no loop, eela tenta pegar um evneot da fila (event_dequeue)
@@ -37,19 +56,19 @@ void Nextion__controle_eventos_init(void)
 void Nextion_controle_eventos_run(void)
 {
 	//tentando buscar evento na fila circular
-	Nextion_event_t* evento = event_dequeue(&EventQueue);
+	Nextion_event_t* evento = event_dequeue(&FilaEventos);
 
 	//se nao houver um evento
 	if (evento == NULL){
 		return;
 	}
 
+	if(EstadoAtual == STATE_PADRAO)
+		nextion_handle_estado_padrao(evento);
+
 	//agora sim iremos passar o evneto para o handler correto
 	switch (EstadoAtual)
 	{
-	case STATE_PADRAO:
-		nextion_handle_estado_padrao(evento);
-		break;
 
 	case STATE_ESPERA_SP:
 		nextion_handle_estado_sp(evento);
@@ -132,6 +151,7 @@ static void nextion_handle_estado_sp(Nextion_event_t *evento){
 	switch(evento->event)
 	{
 	case EVENT_CONFIRM_SP:
+		InfosControlador.sp = evento->value;
 		break;
 
 	default:
@@ -144,6 +164,7 @@ static void nextion_handle_estado_kp(Nextion_event_t *evento){
 	switch(evento->event)
 	{
 	case EVENT_CONFIRM_KP:
+		InfosControlador.kp = evento->value;
 		break;
 
 	default:
@@ -156,6 +177,11 @@ static void nextion_handle_estado_kp(Nextion_event_t *evento){
 static void nextion_handle_estado_driver(Nextion_event_t *evento){
 	if (evento->event == EVENT_TOGGLE_DRIVER){
 
+		if(InfosControlador.pag_atual == PAGINA_AUTOMATICO)
+			InfosControlador.driver_on = evento->value; // Como sabemos o que será retornado do nextion, podemos fazer isso
+
+		else if (InfosControlador.pag_atual == PAGINA_MANUAL) // No modo manual, o driver está sempre ligado
+			InfosControlador.driver_on = LIGADO;
 	}
 	EstadoAtual = STATE_PADRAO;
 }
@@ -165,11 +191,18 @@ static void nextion_handle_estado_aquecedor(Nextion_event_t *evento){
     switch(evento->event)
     {
         case EVENT_TOGGLE_HEATER:
-            // HeaterEnabled = !HeaterEnabled;    esse é um exmplo do qe vamos ter que passar aqui depois, NAO ESQUECER DE FAZER ISSO
+            	if(InfosControlador.pag_atual == PAGINA_MANUAL)
+            		InfosControlador.heater_on = evento->value;
+            	else if(InfosControlador.pag_atual == PAGINA_AUTOMATICO)
+            		InfosControlador.heater_on = LIGADO;
             break;
 
         case EVENT_CONFIRM_HEATER_VALUE:
-            break;
+
+        	if(InfosControlador.pag_atual == PAGINA_MANUAL) // Apenas necessita de confirmação na página manual. Na parte automática, não mexe
+        		InfosControlador.heater_dt = evento->value;
+
+        	break;
 
         default:
         	break;
@@ -182,9 +215,22 @@ static void nextion_handle_estado_fan(Nextion_event_t *evento){
 	switch(evento->event)
 	{
 	case EVENT_TOGGLE_FAN:
+
+		if(InfosControlador.pag_atual == PAGINA_MANUAL){
+			InfosControlador.fan_on = evento->value;
+
+		} else if(InfosControlador.pag_atual == PAGINA_AUTOMATICO){
+			InfosControlador.fan_on = LIGADO;
+		}
+
 		break;
 
 	case EVENT_CONFIRM_FAN_VALUE:
+
+		if(InfosControlador.pag_atual == PAGINA_MANUAL){ // Apenas mexe no duty cicle se for no modo manual
+			InfosControlador.fan_dt = evento->value;
+		}
+
 		break;
 
 	default:
@@ -194,23 +240,38 @@ static void nextion_handle_estado_fan(Nextion_event_t *evento){
 }
 
 //pagina manual
+/*
+ * 	Em uma transição de página, no caso, estado de operação, deve-se garantir que a transição seja feita de maneira segura, para evitar
+ * 	Possíveis mudanças bruscas na lógica de controle de uma hora para a outra
+ *	Para isso, os PWMs serão setados em 0 inicialmente, e o driver estará ligado
+ *
+ * */
+
 static void nextion_handle_estado_page_manual(Nextion_event_t *evento){
+
 	switch(evento->event)
 	{
-	case EVENT_TOGGLE_HEATER:
-		break;
 
-	case EVENT_TOGGLE_FAN:
-		break;
+	case EVENT_PAGE_MANUAL: 						// Necessário implementar a lógica de "transição segura"
 
-	case EVENT_CONFIRM_HEATER_VALUE:
-		break;
+		InfosControlador.modo_seguranca = LIGADO;
 
-	case EVENT_CONFIRM_FAN_VALUE:
-		break;
+		InfosControlador.driver_on = LIGADO;
+		InfosControlador.heater_on = DESLIGADO;
+		InfosControlador.fan_on = DESLIGADO;
 
-	case EVENT_PAGE_AUTO:
-		EstadoAtual = STATE_PAGINA_AUTOMATICO;
+		InfosControlador.pag_atual = PAGINA_MANUAL;
+
+		InfosControlador.fan_dt = DESLIGADO;
+		InfosControlador.heater_dt = DESLIGADO;
+
+		/* Variáveis não utilizadas deverão voltar ao estado inicial para serem recarregadas posteriormente	*/
+		InfosControlador.kp = VALOR_INICIAL_KP;
+		InfosControlador.sp = VALOR_INICIAL_SP;
+
+		nextion_set_component_value(NEXTION_OBJNAME_PV, InfosControlador.pv); // Já envia ao Nextion a temperatura atual
+
+		EstadoAtual = STATE_PADRAO;
 		break;
 
 	default:
@@ -222,14 +283,27 @@ static void nextion_handle_estado_page_manual(Nextion_event_t *evento){
 static void nextion_handle_estado_page_automatico(Nextion_event_t *evento){
 	switch(evento->event)
 	{
-	case EVENT_CONFIRM_SP:
-		break;
 
-	case EVENT_CONFIRM_KP:
-		break;
+	case EVENT_PAGE_AUTO:
 
-	case EVENT_PAGE_MANUAL:
-		EstadoAtual = STATE_PAGINA_MANUAL;
+		InfosControlador.modo_seguranca = LIGADO;
+
+		InfosControlador.driver_on = DESLIGADO;
+		InfosControlador.heater_on = DESLIGADO;
+		InfosControlador.fan_on = DESLIGADO;
+
+		InfosControlador.pag_atual = PAGINA_AUTOMATICO;
+
+		InfosControlador.fan_dt = DESLIGADO;
+		InfosControlador.heater_dt = DESLIGADO;
+
+		InfosControlador.kp = VALOR_INICIAL_KP;
+		InfosControlador.sp = VALOR_INICIAL_SP;
+
+		nextion_set_component_value(NEXTION_OBJNAME_PV, InfosControlador.pv); // Já envia ao Nextion a temperatura atual
+
+
+		EstadoAtual = STATE_PADRAO;
 		break;
 
 	default:

@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 Nextion_event_t NextionEvent;
+Nextion_EventQueue_t FilaEventos;
 
 /* Implementação relativa a fila de eventos que o algoritmo de controle principal consultará */
 

@@ -65,6 +65,8 @@ void nextion_get_component_value(const char *component_name);
 #define MSG_NEXTION_DT_HEATER	      0x05			/* Nextion envia o valor setado de duty cicle do heater do usuário para o STM32 */
 #define MSG_NEXTION_DT_FAN	      	  0x04			/* Nextion envia o valor setado de duty cicle do fan do usuário para o STM32 */
 
+#define NEXTION_OBJNAME_PV "PV"
+
 /* FIM DEFINES PARA COMPONTENTES/COMANDOS DO NEXTION */
 
 #endif /* NEXTION_H */

@@ -68,6 +68,8 @@ typedef struct {
 
 } Nextion_EventQueue_t;
 
+extern Nextion_EventQueue_t FilaEventos;
+
 /* Enquanto observamos a fila, é necessário lembrar de um princípio FUNDAMENTAL
  	 	 Veja que:
  	 * Essa fila será consumida pelo laço de controle principal.
