@@ -31,6 +31,11 @@
 #include <stdio.h>
 #include <string.h>
 #include "pwm.h"
+#include "nextion_control_events.h"
+#include "control.h"
+#include "nextion_interface.h"
+#include "nextion_events.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -105,6 +110,9 @@ int main(void)
   char buffer_temperatura[20];
   PWM_Init(&htim3, TIM_CHANNEL_1);
   PWM_Init(&htim4, TIM_CHANNEL_1);
+  Nextion_controle_eventos_init();
+  event_queue_init(&FilaEventos);
+
 
 
   /* USER CODE END 2 */
@@ -113,7 +121,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
+	  Controle_Temperatura();
+	  Nextion_controle_eventos_run();
 
 
 

@@ -9,10 +9,52 @@
 #include "adc.h"
 #include "nextion_control_events.h"
 #include "nextion_interface.h"
+#include "control.h"
+#include "pwm.h"
+
+void Atualiza_PWM(){
+	if(InfosControlador.driver_on){
+		PWM_Resistor_SetDutyCycle(DESLIGADO);
+		PWM_SetDutyCycle(DESLIGADO);
+		return;
+	}
+	//AQUECEDOR
+	if(InfosControlador.heater_on){
+		PWM_Resistor_SetDutyCycle(InfosControlador.heater_dt);
+	} else {
+		PWM_Resistor_SetDutyCycle(DESLIGADO);
+	}
+
+	//FAN
+	if(InfosControlador.fan_on){
+		PWM_SetDutyCycle(InfosControlador.fan_on);
+	} else {
+		PWM_SetDutyCycle(DESLIGADO);
+	}
+}
 
 void Controle_Temperatura(){
+	Atualiza_Medidas();
 
+	if(InfosControlador.modo_seguranca){
+		Controle_Modo_Segurança();
+		Atualiza_PWM();
+		return;
+	}
+	switch(InfosControlador.pag_atual){
+		case PAGINA_MANUAL:
+			Controle_Modo_Manual();
+			break;
 
+		case PAGINA_AUTOMATICO:
+			Controle_Modo_Automatico();
+			break;
+
+		default:
+			Controle_Modo_Segurança();
+			break;
+
+	}
 
 }
 

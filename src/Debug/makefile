@@ -60,8 +60,8 @@ all: main-build
 main-build: Controlador_Temperatura.elf secondary-outputs
 
 # Tool invocations
-Controlador_Temperatura.elf Controlador_Temperatura.map: $(OBJS) $(USER_OBJS) C:\Users\Usuario\OneDrive\Documentos\Arquitetura_micro\TRABALHO_XULIO\Controlador-de-Temperatura-com-STM32H563zi\src\STM32H563ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Controlador_Temperatura.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m33 -T"C:\Users\Usuario\OneDrive\Documentos\Arquitetura_micro\TRABALHO_XULIO\Controlador-de-Temperatura-com-STM32H563zi\src\STM32H563ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Controlador_Temperatura.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Controlador_Temperatura.elf Controlador_Temperatura.map: $(OBJS) $(USER_OBJS) C:\Users\User\OneDrive\Documentos\Arquitetura_micro\TRABALHO_XULIO\Controlador-de-Temperatura-com-STM32H563zi\src\STM32H563ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Controlador_Temperatura.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m33 -T"C:\Users\User\OneDrive\Documentos\Arquitetura_micro\TRABALHO_XULIO\Controlador-de-Temperatura-com-STM32H563zi\src\STM32H563ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Controlador_Temperatura.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -18,4 +18,5 @@ void Controle_Modo_Automatico();
 
 void Controle_Modo_Segurança();
 
+void Atualiza_PWM();
 #endif /* INC_CONTROL_H_ */

@@ -1,0 +1,6 @@
+../Core/Src/control.c:15:6:Atualiza_PWM	4
+../Core/Src/control.c:36:6:Controle_Temperatura	4
+../Core/Src/control.c:62:6:Atualiza_Medidas	1
+../Core/Src/control.c:76:6:Controle_Modo_Manual	3
+../Core/Src/control.c:102:6:Controle_Modo_Automatico	8
+../Core/Src/control.c:143:6:Controle_Modo_Segurança	2
