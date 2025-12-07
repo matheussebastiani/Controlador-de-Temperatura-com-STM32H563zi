@@ -322,7 +322,7 @@ Na ocasião acima...
 
 ### INICIO DA MONTAGEM: 
 <p align="center">
- <img src="" width="500">
+ <img src="montagem_1.jpg" width="500">
 </p>
 
 >[!NOTE]
@@ -330,7 +330,7 @@ Na ocasião acima...
 
 ### ADIÇÃO DO SENSOR DE TEMPERATURA LM35:
 <p align="center">
- <img src="" width="500">
+ <img src="montagem_2.jpg" width="500">
 </p>
 
 >[!NOTE]
@@ -338,7 +338,7 @@ Na ocasião acima...
 
 ### FIM DA MONTAGEM:
 <p align="center">
- <img src="" width="500">
+ <img src="montagem_3.jpg" width="500">
 </p>
 
 >[!NOTE]
@@ -471,6 +471,7 @@ Utilziamos de um protocolo novo que fizemos com base no protocolo padrao de envi
    ```c
    DRIVER_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DRIVER_STATE.txt=\"ON\"\xFF\xFF\xFF
    ```
+
 
 
 
