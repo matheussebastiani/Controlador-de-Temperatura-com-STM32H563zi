@@ -8,28 +8,6 @@
 #ifndef INC_NEXTION_CONTROL_EVENTS_H_
 #define INC_NEXTION_CONTROL_EVENTS_H_
 
-/*
- * Arquivo: nextion_state_machine.h
- * --------------------------------
- * Este arquivo define a máquina de estados responsável por interpretar
- * os eventos vindos do Nextion (via UART) e transformar esses eventos
- * em ações internas do sistema.
- *
- * O Nextion envia comandos → os comandos viram eventos na fila →
- * a máquina de estados interpreta cada evento e toma decisões.
- *
- * Exemplos de ações tomadas pela máquina:
- *   - Atualizar SP (setpoint)
- *   - Atualizar KP do controle
- *   - Ligar/desligar heater, fan ou driver
- *   - Mudar página entre manual/automático
- *
- * Este arquivo contém:
- *   - Enum dos estados possíveis
- *   - Variável global com o estado atual
- *   - Funções de inicialização e execução da máquina
- */
-
 #include <stdint.h>
 #include <stdbool.h>
 #include "nextion_events.h" //acessar a fila de evntos
@@ -55,21 +33,6 @@
 
 #define MODO_SEGURANCA_INICIAL 	 DESLIGADO
 
-// estados rpesentes na maquina para controle dos eventos
-typedef enum {
-	STATE_PADRAO,
-	STATE_ESPERA_SP,
-	STATE_ESPERA_KP,
-	STATE_CONTROLE_DRIVER,
-	STATE_CONTROLE_AQUECEDOR,
-	STATE_CONTROLE_FAN,
-	STATE_PAGINA_MANUAL,
-	STATE_PAGINA_AUTOMATICO
-} EstadoSistema_t;
-
-//variavel global (extern) que mantem o estado atual‍
-extern EstadoSistema_t EstadoAtual;
-
 /* Estrutura de controle principal do sistema, conterá todas as informações críticas de controle */
 
 typedef struct{
@@ -85,12 +48,12 @@ typedef struct{
 	uint8_t heater_on;		/* Indica se o aquecedor está ligado ou desligado	*/
 	uint8_t fan_on;			/* Indica se o ventilador está ligado ou desligado */
 
-	int8_t fan_dt;			/* Porcentagem informada no display para o PWM do FAN no modo manual */
-	int8_t heater_dt;		/* Porcentagem informada no display para o PWM do heater no modo manual */
+	int32_t fan_dt;			/* Porcentagem informada no display para o PWM do FAN no modo manual */
+	int32_t heater_dt;		/* Porcentagem informada no display para o PWM do heater no modo manual */
 
-	int8_t modo_seguranca; 	/* Indica se o modo de segurança está setado ou não. Será utilizado apenas na transição de modos de operação	*/
+	int32_t modo_seguranca; 	/* Indica se o modo de segurança está setado ou não. Será utilizado apenas na transição de modos de operação	*/
 
-	int8_t erro;			/* Indica a diferença entre SP e PV	*/
+	int32_t erro;			/* Indica a diferença entre SP e PV	*/
 
 } Controlador_Temp_Infos_t;
 

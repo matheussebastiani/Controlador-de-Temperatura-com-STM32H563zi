@@ -1,8 +1,8 @@
 ../Core/Src/nextion_interface.c:14:6:nextion_atualiza_pv	1
-../Core/Src/nextion_interface.c:22:6:nextion_atualiza_sp	1
-../Core/Src/nextion_interface.c:29:6:nextion_atualiza_kp	1
-../Core/Src/nextion_interface.c:36:6:nextion_atualiza_driver	2
-../Core/Src/nextion_interface.c:45:6:nextion_atualiza_fan	2
-../Core/Src/nextion_interface.c:54:6:nextion_atualiza_aquecedor	2
-../Core/Src/nextion_interface.c:63:6:nextion_atualiza_fan_dt	1
-../Core/Src/nextion_interface.c:68:6:nextion_atualiza_aquecedor_dt	1
+../Core/Src/nextion_interface.c:20:6:nextion_atualiza_sp	1
+../Core/Src/nextion_interface.c:25:6:nextion_atualiza_kp	1
+../Core/Src/nextion_interface.c:31:6:nextion_atualiza_driver	2
+../Core/Src/nextion_interface.c:40:6:nextion_atualiza_fan	2
+../Core/Src/nextion_interface.c:49:6:nextion_atualiza_aquecedor	2
+../Core/Src/nextion_interface.c:58:6:nextion_atualiza_fan_dt	1
+../Core/Src/nextion_interface.c:63:6:nextion_atualiza_aquecedor_dt	1

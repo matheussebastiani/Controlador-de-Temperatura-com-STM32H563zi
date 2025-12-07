@@ -7,10 +7,31 @@ Trabalho final da disciplina de Arquitetura e Programação de Microcontroladore
 
 ## Objetivo do trabalho
 
+### Objetivo geral
 Projetar um **sistema de controle de temperatura** capaz de aumentar e reduzir a temperatura de um ambiente com base na:
 
 - **Temperatura medida**;
 - **Valor programado pelo usuário _(set-point)_**.
+
+### Visão Geral da Arquitetura do Sistema
+O sistema implementa um controle de temperatura baseado em um laço proporcional (P), operando em conjunto com:
+
+- Leitura analógica via ADC do sensor LM35
+- Interface gráfica no display Nextion NX8048P070
+- Acionamento PWM dos atuadores por meio do driver L293D
+- Máquina de estados responsável pelos modos Automático, Manual e Segurança
+- Camada de abstração para comunicação via UART entre STM32 <-> Nextion
+
+### Processo de Compilação e Execução (Build Instructions)
+
+Como compilar o projeto:
+
+1. Abrir STM32CubeIDE
+2. Importar o projeto em: File -> Import -> Existing STM32CubeIDE Project
+3. Selecionar placa NUCLEO-H563ZI
+4. Compilar -> Build Project
+5. Conectar USB ST-Link
+6. Flash no microcontrolador (Run -> Debug)
 
 ### Hardware Utilizado:
 
@@ -60,7 +81,7 @@ Através do IHM, deverá ser possível:
 A comunicação entre o microcontrolador e o display da Nextion deverá ser feita via UART, utilizando o protocolo de comandos do NEXTION.
 
 > [!NOTE]
-> O Display da NEXTION possui um protocolo próprio para a alteração de textos, variáveis e envio de leituras para o microcontrolador via serial.
+> O Display da NEXTION possui um protocolo próprio para a alteração de textos, variáveis e envio de leituras para o microcontrolador via serial. Porém nós estipulamos um novo protocólo próprio de melhor entendimento do processo. EXEMPLO: (**printh 10**; **print SP.val**; **printh FF**; **printh FF**; **printh FF**) isso para o valor do SP.
 
 ### Telas da IHM
 O projeto deve apresentar, no mÍnimo, duas telas principais na IHM Nextion NX8048P070: uma tela para monitoração e ajustes automáticos e outra tela para comandos manuais.
@@ -78,8 +99,8 @@ Será a tela principal do projeto, onde estarão concentradas as informações r
 Nessa primeira tela, o usuário deve ser capaz de interagir com os elementos acima da seguinte forma...
 
 1. Ajustar o valor do SET-POINT (temperatura desejada a ser atingida), utilizando-se de um SLIDER (escolha pessoal da dupla) para controlar o valor de SP.
-2. Habilitar ou desabilitar o driver de saída (por meio de GPIO em nosso caso), quando habilitado o HEART-BEAT deve estar "pulsando" e "liberar" as saídas para o aquecedor e ventilador. Quando desabilitado, o led de HEART-BEAT deve se manter ACESSO CONTINUAMENTE e
-   as saídas aos perífericos forçadas a 0 (ZERO) até sua habilitação ocorrer.
+2. Habilitar ou desabilitar o driver de saída (por meio de GPIO em nosso caso), quando habilitado o HEART-BEAT deve estar "pulsando" e "liberar" as saídas para o aquecedor e ventilador. Quando desabilitado, o led de HEART-BEAT deve se manter ACESSO CONTINUAMENTE e as saídas aos perífericos forçadas a 0 (ZERO) até sua habilitação ocorrer.
+
 >[!NOTE]
 >O HEART BEAT é um LED que informa o estado da execução do sistema, quando a execução for habilitada ele "pulsa" e quando desabilitada fica aceso continuamente.
 
@@ -93,7 +114,7 @@ Será a tela em que o usuário poderá controlar manualmente a rotação do FAN 
 >Quando ligado (ON), deve-se exibir claramente o percentual do valor, já quando desligado, a porcentagem não deve ser informada ou = 0%.
 
 >[!IMPORTANT]
->É importante salientar de que as telas deverão ser de fácil entendimento e manuseio, além de fácil distinção entre uma e outra (TELA 1 & TELA 2).
+>É importante salientar de que as telas estão de fácil entendimento e manuseio, além de fácil distinção entre uma e outra (TELA 1 & TELA 2).
 
 ### MICROCONTROLADOR E PERIFÉRICOS
 
@@ -154,11 +175,7 @@ Basicamente serão utilizados os pinos 10 (3A), 11 (3Y), 14 (4Y) e 15 (4A). Nos 
 >É necessário relembrar que os pinos de _enable_ do CI deverão ser acionados via _GPIOs_ do microcontrolador, caso o shield não ligue o pino internamente.
 
 ## AQUECEDOR:
-Resistor (22 OHMS e 1/2 W) que irá fazer o papel do aquecedor no sistma.
-
-<p align="center">
- <img src="" width="500">
-</p>
+Resistor (22 OHMS e 1/2 W) que irá fazer o papel do aquecedor no sistma (UTILIZAMOS UM LED PARA SIMULAR O FUNCIONAMENTO DO AQUECEDOR).
 
 Para não ultrapassar a potência nominal que o resistor em questão suporta, realizamos um cálculo...
 
@@ -224,49 +241,75 @@ Por conta disso, existe a definição da constante:
 Pois, para esse PWM, todo valor recebido pela função que o acionará, deverá ser multiplicado por essa constante para manter o valor máximo de tensão média igual a 3.3V.
 
 ## VENTILADOR:
-Será reproduzido por um motor DC, tendo como especificações os seguintes valores...
+Será reproduzido por um motor DC, tendo como especificações os seguintes valores... (UTILIZAMOS UM LED PARA SIMULAR O FUNCIONAMENTO DO FAN)
 1. Tensão de alimentação: 12 VDC
 2. Corrente típica: 130 mA
-
-<p align="center">
- <img src="" width="500">
-</p>
 
 >[!IMPORTANT]
 >O ventilador (MOTOR DC) deverá ser acionado pelo driver de potência já especificado, contendo a modulação PWM vindo do microcontrolador.
 
-### ACIONAMENTO DAS SAÍDAS:
+## LED DE HEART-BEAT:
+Esse LED informa visualmente sem precisar do uso da GUI, como está o estado do sistema, se ele estiver PULSANDO o sistema está com o driver LIGADO, se estiver aceso de forma CONTÍNUA o sistema está com o driver desligado.
+
+Para a implementação da lógica desse led no sistema foram feitos os seguintes cálculos para funciomaneto em um TIMER:
+
+- Fled = 0,5 Hz
+- T = 1/F -> T = 1/0,5 -> T = 2s
+- t = (PSC + 1) · (ARR + 1) · 250 MHz 
+- 2 = (PSC + 1) · (ARR + 1) · 4 ns
+- (PSC + 1) · (ARR + 1) = 2/4 n
+- (PSC + 1 ) · (ARR + 1) = 5 · 10⁸
+- 10000 · (ARR + 1) = 5 · 10⁸
+- 50000 = (ARR + 1)
+- ARR = **49999**
+>[!NOTE]
+> PSC seria o PREESCALER e o ARR seria Auto Reload Register
+
+## ACIONAMENTO DAS SAÍDAS:
 
 Contendo agora todos os perifericos do projeto, podemos estipular uma logica para que o acionamento das saídas utilizadas sejam feitas corretamente (AQUECEDOR, VENTILADOR).
 >[!IMPORTANT]
->É válido recordar de que teremos 2 modos de operação, AUTOMÁTICO e MANUAL.
+>É válido recordar de que temos 2 modos de operação, AUTOMÁTICO e MANUAL.
 
+### MODO AUTOMÁTICO:
+1. O controlador pessoal (P) que será responsável por determinar o valor de saída, tendo em vista a diferença de SP e PV -> e(t) = SP - PV.
+>[!NOTE]
+>O controlador proporcional  ́e definido por: u(t) = Kp · e(t)
+> - Kp é o ganho proporcional;
+> - e(t) é o erro entre referência e saída;
+> - u(t) é o sinal aplicado ao atuador
 
-
-# MODO AUTOMÁTICO:
-1. O controlador pessoal (P) que será responsável por determinar o valor de saáda, tendo em vista a diferença de SP e PV -> e(t) = SP - PV.
 2. REGRAS DE FUNCIONAMENTO DO AQUECEDOR:
    Ele deverá ser acionado sempre que o valor do setpoint (SP) for maior que o process value (PV) -> SP > PV.
    Na condiçao acima, e erro é positivo, o valor proporcional gerado pelo controlador é maior que 0, o PWM do aquecedor irá receber o valor após a saturação entre 0% e 100% e o ventilador deverá se manter ligado durante esse processo.
 >[!NOTE]
-> EXEMPLO: SP = 50◦C, P V = 42◦C, o valor de (e) será  = 8◦C (DIANTE DISSO O AQUECEDOR DEVERÁ LIGAR COM POTÊNCIA PROPORCIONAL AO VALOR DO ERRO (e)
+> EXEMPLOS:
+> - SP = 50◦C, P V = 42◦C, o valor de (e) será = 8◦C (DIANTE DISSO O AQUECEDOR DEVERÁ LIGAR COM POTÊNCIA PROPORCIONAL AO VALOR DO ERRO (e)
+> - SP=40°C, PV=35°C -> **Aquecedor liga com Kp(5°C)**
+> - SP=40°C, PV=40.2°C -> **Zona morta**
+> - Driver OFF -> **Ambos desligados**
 
 3. REGRAS DE FUNCIOMANTO DO VENTILADOR:
    Ele deve ser acionado sempre que o valor do process value (PV) for maior que o set point (SP) -> PV > SP.
    Na condição acima, o erro será negativo, a ação de aquecer não se torna necessária (PWM = 0), a intensidade do ventilador deve ser relacionada com o módulo do valor do erro (e) e o aquecedor deve se manter desligado.
 >[!NOTE]
->EXEMPLO: SP = 40◦C, PV = 47◦C, o valor de (e) será  = −7◦C (DIANTE DISSO O SISTEMA DEVE LIGAR O VENTILADOR CONTENDO A POTÊNCIA EQUIVALENTE OU PROPORCIONAL AO ERRO (e))
+>EXEMPLOS:
+> - SP = 40◦C, PV = 47◦C, o valor de (e) será  = −7◦C (DIANTE DISSO O SISTEMA DEVE LIGAR O VENTILADOR CONTENDO A POTÊNCIA EQUIVALENTE OU PROPORCIONAL AO ERRO (e))
+> - SP=40°C, PV=47°C -> **Fan liga**
+> - SP=40°C, PV=40.2°C -> **Zona morta**
+> - Driver OFF -> **Ambos desligados**
 
 4. ZONA MORTA:
    Foi observado que seria recomendado a implementação de uma "ZONA MORTA" pelo fato de que oscilações rápidas de temperatura pudessem ocorrer -> |SP - PV| < 0,5 ◦C
    Para essa condição basicamente o ventilador e aquecedor mantém-se desligados e o sistema fica no aguardo de uma nova verificação.
 
-# MODO MANUAL:
+### MODO MANUAL:
 Nesse modo o próprio usuário tem controle do sistema de aquecer e ventilar.
 Na ocasião acima...
-1. O conntrolador proporcional (P) irá ser completamente ignorado.
+1. O controlador proporcional (KP) irá ser completamente ignorado.
 2. Apenas a saída que estiver ligada (ON) recebe o valor que for ajustado.
 3. Quando ambas as saídas estiverem ligadas (ON) os respectivos indicadores serão mostrados na interface de usuário (GUI).
+4. Só é possível enviar os valores quando os botões referentes ao aquecedor e fan estiverem ligados.
 
 >[!IMPORTANT]
 > Quando o driver estiver completamente DESABILITADO, ambas as saídas devem estar com 0% (DESLIGADO) e o led de HEART BEAT deve se manter acesso continuamente (ESSE ESTADO POSSUI PRIORIDADE DENTRE TODOS OS OUTROS).
@@ -274,6 +317,32 @@ Na ocasião acima...
 ## DESENHO ESQUEMÁTICO:
 
 ---
+
+## ETAPAS DE MONTAGEM DO CIRCUITO DO PROJETO:
+
+### INICIO DA MONTAGEM: 
+<p align="center">
+ <img src="" width="500">
+</p>
+
+>[!NOTE]
+>Acima está o início do processo de montagem.
+
+### ADIÇÃO DO SENSOR DE TEMPERATURA LM35:
+<p align="center">
+ <img src="" width="500">
+</p>
+
+>[!NOTE]
+>Acima está a montagem e ligação dos pinos do sensor de temperatura que passa o valor do PV (PROCESS VALUE).
+
+### FIM DA MONTAGEM:
+<p align="center">
+ <img src="" width="500">
+</p>
+
+>[!NOTE]
+>Acima está a montagem e ligação dos 3 LEDs, referente a: FAN, AQUECEDOR E HEART-BEAT.
 
 ## Documentação - Comunicação NEXTION + STM32
 
@@ -306,6 +375,7 @@ Por exemplo, quando o usuário selecionar, no modo automático, o valor de _Set 
 No caso, as possibilidades mapeadas foram:
 
 ## ENVIO DE DADOS DO NEXTION PARA O MCU...
+Utilziamos de um protocolo novo que fizemos com base no protocolo padrao de envio de mensagnes do nextion, dessa forma nossa GUI segue o seguinte...
 ### BOTÕES:
  1. Confirmar envio do SP:
     ```c
@@ -401,6 +471,9 @@ No caso, as possibilidades mapeadas foram:
    ```c
    DRIVER_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DRIVER_STATE.txt=\"ON\"\xFF\xFF\xFF
    ```
+
+
+
 
 
 

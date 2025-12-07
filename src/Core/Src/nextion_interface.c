@@ -12,24 +12,19 @@
 
 //atualizar o valor do PV
 void nextion_atualiza_pv(int32_t pv){
-	char buffer[16];
-	sprintf(buffer, "PV.txt=\"%d\"", pv);
-	nextion_set_component_text("PV", buffer);
+	nextion_set_component_value("PV", (uint32_t) pv);
 
 }
 
 //atualizar o valor do SP
 void nextion_atualiza_sp(int32_t sp){
-	char buffer[16];
-		sprintf(buffer, "SP.txt=\"%d\"", sp);
-	nextion_set_component_value("SP", buffer);
+	nextion_set_component_value("SP", (uint32_t) sp);
 }
 
 //atualizar o valor do kp
 void nextion_atualiza_kp(int32_t kp){
-	char buffer[16];
-	sprintf(buffer, "KP.txt=\"%d\"", kp);
-	nextion_set_component_value("KP", buffer);
+
+	nextion_set_component_value("KP", (uint32_t) kp);
 }
 
 //atualizar o estado do driver(lembrando que "on" pode receber 0 ou 1 dependendo do estado)

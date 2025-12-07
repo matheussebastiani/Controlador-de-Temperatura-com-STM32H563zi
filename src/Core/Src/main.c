@@ -45,7 +45,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CAIXA_TEXTO_PV "PV"
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -104,16 +104,16 @@ int main(void)
   MX_USART3_UART_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_TIM_Base_Start_IT(&htim6);
   nextion_init();
-  char buffer_temperatura[20];
   PWM_Init(&htim3, TIM_CHANNEL_1);
   PWM_Init(&htim4, TIM_CHANNEL_1);
   Nextion_controle_eventos_init();
   event_queue_init(&FilaEventos);
-
-
+  Nextion_controle_eventos_init();
 
   /* USER CODE END 2 */
 
@@ -123,6 +123,7 @@ int main(void)
   {
 	  Controle_Temperatura();
 	  Nextion_controle_eventos_run();
+	  Atualiza_PWM();
 
 
 
@@ -192,6 +193,19 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
+/* Função de callback do TIM6. Será responsável por implementar a lógica do LED de Heart Beat	*/
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+
+	if(htim-> Instance == TIM6){
+		if(InfosControlador.driver_on){
+			HAL_GPIO_TogglePin(LED_HEART_BEAT_GPIO_Port, LED_HEART_BEAT_Pin);
+		} else {
+			HAL_GPIO_WritePin(LED_HEART_BEAT_GPIO_Port, LED_HEART_BEAT_Pin, GPIO_PIN_SET);
+		}
+	}
+
+}
 /* USER CODE END 4 */
 
 /**
