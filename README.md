@@ -129,7 +129,6 @@ O microcontrolador será responsável por...
 7. Controlar o LED do HEART BEAT
 Todo o desenvolvimento será feito por meio da IDE STM32CubeIDE utilizando a biblioteca HAL, organizando em arquivos .C e .H.
 
-FOTO DO MICRO COM A PLACA E SEUS PERIFERICOS
 
 ## SENSOR DE TEMPERATURA (LM35):
 Sensor analógico que será responsável por passar os valores de temperatura a serem utilizados no projeto.
@@ -316,7 +315,11 @@ Na ocasião acima...
 
 ## DESENHO ESQUEMÁTICO:
 
----
+<p align="center">
+ <img src="imgs/esquematico.jpeg" width="500">
+</p>
+
+LINK para o PDF do esquematico: [PDF esquematico](sch/esquematico_controle_de_temperatura.pdf)
 
 ## ETAPAS DE MONTAGEM DO CIRCUITO DO PROJETO:
 
@@ -471,6 +474,7 @@ Utilziamos de um protocolo novo que fizemos com base no protocolo padrao de envi
    ```c
    DRIVER_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DRIVER_STATE.txt=\"ON\"\xFF\xFF\xFF
    ```
+
 
 
 
