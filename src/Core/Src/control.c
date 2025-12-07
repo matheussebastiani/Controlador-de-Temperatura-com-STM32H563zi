@@ -135,13 +135,13 @@ void Controle_Modo_Automatico(){
 
 
 	if(InfosControlador.heater_on){
-		if(InfosControlador.kp > 0){
+		if(InfosControlador.kp >= 0){
 			InfosControlador.heater_dt = (InfosControlador.kp * InfosControlador.erro);
 		}
 	}
 
 	if(InfosControlador.fan_on){
-		if(InfosControlador.kp > 0){
+		if(InfosControlador.kp >= 0){
 			InfosControlador.fan_dt = (InfosControlador.kp * InfosControlador.erro);
 		}
 	}

@@ -57,6 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define LED_HEART_BEAT_Pin GPIO_PIN_0
+#define LED_HEART_BEAT_GPIO_Port GPIOG
 
 /* USER CODE BEGIN Private defines */
 
