@@ -3,10 +3,10 @@
 ../Core/Src/nextion.c:61:6:nextion_get_active_page	1
 ../Core/Src/nextion.c:68:6:HAL_UARTEx_RxEventCallback	3
 ../Core/Src/nextion.c:83:6:nextion_parse_command	17
-../Core/Src/nextion.c:179:6:nextion_set_page	1
-../Core/Src/nextion.c:186:6:nextion_set_component_value	1
-../Core/Src/nextion.c:193:6:nextion_set_component_color	1
-../Core/Src/nextion.c:200:6:nextion_set_background_color	1
-../Core/Src/nextion.c:207:6:nextion_set_component_text	1
-../Core/Src/nextion.c:215:6:nextion_move_component	1
-../Core/Src/nextion.c:224:6:nextion_get_component_value	1
+../Core/Src/nextion.c:142:6:nextion_set_page	1
+../Core/Src/nextion.c:149:6:nextion_set_component_value	1
+../Core/Src/nextion.c:156:6:nextion_set_component_color	1
+../Core/Src/nextion.c:163:6:nextion_set_background_color	1
+../Core/Src/nextion.c:170:6:nextion_set_component_text	1
+../Core/Src/nextion.c:178:6:nextion_move_component	1
+../Core/Src/nextion.c:187:6:nextion_get_component_value	1

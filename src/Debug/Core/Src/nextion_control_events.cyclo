@@ -1,10 +1,2 @@
-../Core/Src/nextion_control_events.c:30:6:Nextion_controle_eventos_init	1
-../Core/Src/nextion_control_events.c:57:6:Nextion_controle_eventos_run	9
-../Core/Src/nextion_control_events.c:114:13:nextion_handle_estado_padrao	8
-../Core/Src/nextion_control_events.c:151:13:nextion_handle_estado_sp	2
-../Core/Src/nextion_control_events.c:165:13:nextion_handle_estado_kp	2
-../Core/Src/nextion_control_events.c:180:13:nextion_handle_estado_driver	4
-../Core/Src/nextion_control_events.c:195:13:nextion_handle_estado_aquecedor	6
-../Core/Src/nextion_control_events.c:221:13:nextion_handle_estado_fan	6
-../Core/Src/nextion_control_events.c:259:13:nextion_handle_estado_page_manual	2
-../Core/Src/nextion_control_events.c:300:13:nextion_handle_estado_page_automatico	2
+../Core/Src/nextion_control_events.c:8:6:Nextion_controle_eventos_init	1
+../Core/Src/nextion_control_events.c:25:6:Nextion_controle_eventos_run	11

@@ -82,96 +82,59 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 // Função para processar comandos Nextion
 void nextion_parse_command(uint8_t *data, uint16_t size)
 {
-	if (size < 1)
-		return;
+    if (size < 2)   // mínimo necessário
+        return;
 
-	uint8_t command = data[0]; //primeiro byte é sempre o comando
-	// consultar: https://wiki.iteadstudio.com/Nextion_Instruction_Set#page:_Refresh_page
-	// para obter a lista de comandos validos
+    uint8_t command = data[0];
+    uint8_t value   = data[1];
 
-	switch (command){
+    Nextion_event_t ev;
+    ev.event = EVENT_NONE;
+    ev.value = value;
 
-		case MSG_NEXTION_ENVIO_VALOR_SP:
-		{
-			NextionEvent.event = EVENT_CONFIRM_SP;
-			NextionEvent.value = data[1]; 			// Byte onde se encontrará o valor do SP
+    switch (command)
+    {
+        case MSG_NEXTION_ENVIO_VALOR_SP:
+            ev.event = EVENT_CONFIRM_SP;
+            break;
 
-			break;
-		}
+        case MSG_NEXTION_ENVIO_VALOR_KP:
+            ev.event = EVENT_CONFIRM_KP;
+            break;
 
-		case MSG_NEXTION_ENVIO_VALOR_KP:
-		{
-			NextionEvent.event = EVENT_CONFIRM_KP;
-			NextionEvent.value = data[1];
+        case MSG_NEXTION_ESTADO_DRIVER:
+            ev.event = EVENT_TOGGLE_DRIVER;
+            break;
 
-			break;
-		}
+        case MSG_NEXTION_ESTADO_HEATER:
+            ev.event = EVENT_TOGGLE_HEATER;
+            break;
 
-		case MSG_NEXTION_ESTADO_DRIVER:
-		{
-			NextionEvent.event = EVENT_TOGGLE_DRIVER;
-			NextionEvent.value = data[1];
+        case MSG_NEXTION_ESTADO_FAN:
+            ev.event = EVENT_TOGGLE_FAN;
+            break;
 
-			break;
-		}
+        case MSG_NEXTION_PAGINA_MANUAL:
+            ev.event = EVENT_PAGE_MANUAL;
+            break;
 
-		case MSG_NEXTION_ESTADO_HEATER:
-		{
-			NextionEvent.event = EVENT_TOGGLE_HEATER;
-			NextionEvent.value = data[1];
+        case MSG_NEXTION_PAGINA_AUTOMATICO:
+            ev.event = EVENT_PAGE_AUTO;
+            break;
 
-			break;
+        case MSG_NEXTION_DT_HEATER:
+            ev.event = EVENT_CONFIRM_HEATER_VALUE;
+            break;
 
-		}
+        case MSG_NEXTION_DT_FAN:
+            ev.event = EVENT_CONFIRM_FAN_VALUE;
+            break;
 
-		case MSG_NEXTION_ESTADO_FAN:
-		{
-			NextionEvent.event = EVENT_TOGGLE_FAN;
-			NextionEvent.value = data[1];
+        default:
+            return; // comando inválido
+    }
 
-			break;
-		}
-
-		case MSG_NEXTION_PAGINA_MANUAL:
-		{
-			NextionEvent.event = EVENT_PAGE_MANUAL;
-			NextionEvent.value = data[1];
-
-			break;
-		}
-
-		case MSG_NEXTION_PAGINA_AUTOMATICO:
-		{
-			NextionEvent.event = EVENT_PAGE_AUTO;
-			NextionEvent.value = data[1];
-
-			break;
-		}
-
-		case MSG_NEXTION_DT_HEATER:
-		{
-			NextionEvent.event = EVENT_CONFIRM_HEATER_VALUE;
-			NextionEvent.value = data[1];
-
-			break;
-		}
-
-		case MSG_NEXTION_DT_FAN:
-		{
-			NextionEvent.event = EVENT_CONFIRM_FAN_VALUE;
-			NextionEvent.value = data[1];
-
-			break;
-		}
-
-		default:
-			NextionEvent.event = EVENT_NONE;
-			NextionEvent.value = -1;
-			return;
-
-		event_enqueue(&FilaEventos, NextionEvent);
-
-	}
+    event_enqueue(&FilaEventos, ev);
 }
 
 

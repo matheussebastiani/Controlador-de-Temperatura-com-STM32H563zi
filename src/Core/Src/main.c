@@ -107,12 +107,11 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   nextion_init();
-  char buffer_temperatura[20];
   PWM_Init(&htim3, TIM_CHANNEL_1);
   PWM_Init(&htim4, TIM_CHANNEL_1);
   Nextion_controle_eventos_init();
   event_queue_init(&FilaEventos);
-
+  Nextion_controle_eventos_init();
 
 
   /* USER CODE END 2 */
@@ -123,6 +122,7 @@ int main(void)
   {
 	  Controle_Temperatura();
 	  Nextion_controle_eventos_run();
+	  Atualiza_PWM();
 
 
 
