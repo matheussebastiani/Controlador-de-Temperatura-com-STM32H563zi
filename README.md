@@ -7,10 +7,31 @@ Trabalho final da disciplina de Arquitetura e Programação de Microcontroladore
 
 ## Objetivo do trabalho
 
+### Objetivo geral
 Projetar um **sistema de controle de temperatura** capaz de aumentar e reduzir a temperatura de um ambiente com base na:
 
 - **Temperatura medida**;
 - **Valor programado pelo usuário _(set-point)_**.
+
+### Visão Geral da Arquitetura do Sistema
+O sistema implementa um controle de temperatura baseado em um laço proporcional (P), operando em conjunto com:
+
+- Leitura analógica via ADC do sensor LM35
+- Interface gráfica no display Nextion NX8048P070
+- Acionamento PWM dos atuadores por meio do driver L293D
+- Máquina de estados responsável pelos modos Automático, Manual e Segurança
+- Camada de abstração para comunicação via UART entre STM32 <-> Nextion
+
+### Processo de Compilação e Execução (Build Instructions)
+
+Como compilar o projeto:
+
+1. Abrir STM32CubeIDE
+2. Importar o projeto em: File -> Import -> Existing STM32CubeIDE Project
+3. Selecionar placa NUCLEO-H563ZI
+4. Compilar -> Build Project
+5. Conectar USB ST-Link
+6. Flash no microcontrolador (Run -> Debug)
 
 ### Hardware Utilizado:
 
@@ -60,7 +81,7 @@ Através do IHM, deverá ser possível:
 A comunicação entre o microcontrolador e o display da Nextion deverá ser feita via UART, utilizando o protocolo de comandos do NEXTION.
 
 > [!NOTE]
-> O Display da NEXTION possui um protocolo próprio para a alteração de textos, variáveis e envio de leituras para o microcontrolador via serial.
+> O Display da NEXTION possui um protocolo próprio para a alteração de textos, variáveis e envio de leituras para o microcontrolador via serial. Porém nós estipulamos um novo protocólo próprio de melhor entendimento do processo. EXEMPLO: (**printh 10**; **print SP.val**; **printh FF**; **printh FF**; **printh FF**) isso para o valor do SP.
 
 ### Telas da IHM
 O projeto deve apresentar, no mÍnimo, duas telas principais na IHM Nextion NX8048P070: uma tela para monitoração e ajustes automáticos e outra tela para comandos manuais.
@@ -78,8 +99,8 @@ Será a tela principal do projeto, onde estarão concentradas as informações r
 Nessa primeira tela, o usuário deve ser capaz de interagir com os elementos acima da seguinte forma...
 
 1. Ajustar o valor do SET-POINT (temperatura desejada a ser atingida), utilizando-se de um SLIDER (escolha pessoal da dupla) para controlar o valor de SP.
-2. Habilitar ou desabilitar o driver de saída (por meio de GPIO em nosso caso), quando habilitado o HEART-BEAT deve estar "pulsando" e "liberar" as saídas para o aquecedor e ventilador. Quando desabilitado, o led de HEART-BEAT deve se manter ACESSO CONTINUAMENTE e
-   as saídas aos perífericos forçadas a 0 (ZERO) até sua habilitação ocorrer.
+2. Habilitar ou desabilitar o driver de saída (por meio de GPIO em nosso caso), quando habilitado o HEART-BEAT deve estar "pulsando" e "liberar" as saídas para o aquecedor e ventilador. Quando desabilitado, o led de HEART-BEAT deve se manter ACESSO CONTINUAMENTE e as saídas aos perífericos forçadas a 0 (ZERO) até sua habilitação ocorrer.
+
 >[!NOTE]
 >O HEART BEAT é um LED que informa o estado da execução do sistema, quando a execução for habilitada ele "pulsa" e quando desabilitada fica aceso continuamente.
 
@@ -93,7 +114,7 @@ Será a tela em que o usuário poderá controlar manualmente a rotação do FAN 
 >Quando ligado (ON), deve-se exibir claramente o percentual do valor, já quando desligado, a porcentagem não deve ser informada ou = 0%.
 
 >[!IMPORTANT]
->É importante salientar de que as telas deverão ser de fácil entendimento e manuseio, além de fácil distinção entre uma e outra (TELA 1 & TELA 2).
+>É importante salientar de que as telas estão de fácil entendimento e manuseio, além de fácil distinção entre uma e outra (TELA 1 & TELA 2).
 
 ### MICROCONTROLADOR E PERIFÉRICOS
 
@@ -239,17 +260,26 @@ Será reproduzido por um motor DC, tendo como especificações os seguintes valo
 
 Contendo agora todos os perifericos do projeto, podemos estipular uma logica para que o acionamento das saídas utilizadas sejam feitas corretamente (AQUECEDOR, VENTILADOR).
 >[!IMPORTANT]
->É válido recordar de que teremos 2 modos de operação, AUTOMÁTICO e MANUAL.
-
-
+>É válido recordar de que temos 2 modos de operação, AUTOMÁTICO e MANUAL.
 
 # MODO AUTOMÁTICO:
-1. O controlador pessoal (P) que será responsável por determinar o valor de saáda, tendo em vista a diferença de SP e PV -> e(t) = SP - PV.
+1. O controlador pessoal (P) que será responsável por determinar o valor de saída, tendo em vista a diferença de SP e PV -> e(t) = SP - PV.
+>[!NOTE]
+>O controlador proporcional  ́e definido por: u(t) = Kp · e(t)
+> - Kp é o ganho proporcional;
+> - e(t) é o erro entre referência e saída;
+> - u(t) é o sinal aplicado ao atuador
+
 2. REGRAS DE FUNCIONAMENTO DO AQUECEDOR:
    Ele deverá ser acionado sempre que o valor do setpoint (SP) for maior que o process value (PV) -> SP > PV.
    Na condiçao acima, e erro é positivo, o valor proporcional gerado pelo controlador é maior que 0, o PWM do aquecedor irá receber o valor após a saturação entre 0% e 100% e o ventilador deverá se manter ligado durante esse processo.
 >[!NOTE]
-> EXEMPLO: SP = 50◦C, P V = 42◦C, o valor de (e) será  = 8◦C (DIANTE DISSO O AQUECEDOR DEVERÁ LIGAR COM POTÊNCIA PROPORCIONAL AO VALOR DO ERRO (e)
+> EXEMPLOS:
+> - SP = 50◦C, P V = 42◦C, o valor de (e) será  = 8◦C (DIANTE DISSO O AQUECEDOR DEVERÁ LIGAR COM POTÊNCIA PROPORCIONAL AO VALOR DO ERRO (e)
+> - SP=40°C, PV=35°C -> Aquecedor liga com Kp*(5°C)
+> - SP=40°C, PV=47°C -> Fan liga
+> - SP=40°C, PV=40.2°C -> Zona morta
+> - Driver OFF -> ambos desligados
 
 3. REGRAS DE FUNCIOMANTO DO VENTILADOR:
    Ele deve ser acionado sempre que o valor do process value (PV) for maior que o set point (SP) -> PV > SP.
@@ -264,9 +294,10 @@ Contendo agora todos os perifericos do projeto, podemos estipular uma logica par
 # MODO MANUAL:
 Nesse modo o próprio usuário tem controle do sistema de aquecer e ventilar.
 Na ocasião acima...
-1. O conntrolador proporcional (P) irá ser completamente ignorado.
+1. O controlador proporcional (KP) irá ser completamente ignorado.
 2. Apenas a saída que estiver ligada (ON) recebe o valor que for ajustado.
 3. Quando ambas as saídas estiverem ligadas (ON) os respectivos indicadores serão mostrados na interface de usuário (GUI).
+4. Só é possível enviar os valores quando os botões referentes ao aquecedor e fan estiverem ligados.
 
 >[!IMPORTANT]
 > Quando o driver estiver completamente DESABILITADO, ambas as saídas devem estar com 0% (DESLIGADO) e o led de HEART BEAT deve se manter acesso continuamente (ESSE ESTADO POSSUI PRIORIDADE DENTRE TODOS OS OUTROS).
@@ -306,6 +337,7 @@ Por exemplo, quando o usuário selecionar, no modo automático, o valor de _Set 
 No caso, as possibilidades mapeadas foram:
 
 ## ENVIO DE DADOS DO NEXTION PARA O MCU...
+Utilziamos de um protocolo novo que fizemos com base no protocolo padrao de envio de mensagnes do nextion, dessa forma nossa GUI segue o seguinte...
 ### BOTÕES:
  1. Confirmar envio do SP:
     ```c
@@ -401,6 +433,7 @@ No caso, as possibilidades mapeadas foram:
    ```c
    DRIVER_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DRIVER_STATE.txt=\"ON\"\xFF\xFF\xFF
    ```
+
 
 
 
