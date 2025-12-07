@@ -175,11 +175,7 @@ Basicamente serão utilizados os pinos 10 (3A), 11 (3Y), 14 (4Y) e 15 (4A). Nos 
 >É necessário relembrar que os pinos de _enable_ do CI deverão ser acionados via _GPIOs_ do microcontrolador, caso o shield não ligue o pino internamente.
 
 ## AQUECEDOR:
-Resistor (22 OHMS e 1/2 W) que irá fazer o papel do aquecedor no sistma.
-
-<p align="center">
- <img src="" width="500">
-</p>
+Resistor (22 OHMS e 1/2 W) que irá fazer o papel do aquecedor no sistma (UTILIZAMOS UM LED PARA SIMULAR O FUNCIONAMENTO DO AQUECEDOR).
 
 Para não ultrapassar a potência nominal que o resistor em questão suporta, realizamos um cálculo...
 
@@ -245,16 +241,18 @@ Por conta disso, existe a definição da constante:
 Pois, para esse PWM, todo valor recebido pela função que o acionará, deverá ser multiplicado por essa constante para manter o valor máximo de tensão média igual a 3.3V.
 
 ## VENTILADOR:
-Será reproduzido por um motor DC, tendo como especificações os seguintes valores...
+Será reproduzido por um motor DC, tendo como especificações os seguintes valores... (UTILIZAMOS UM LED PARA SIMULAR O FUNCIONAMENTO DO FAN)
 1. Tensão de alimentação: 12 VDC
 2. Corrente típica: 130 mA
 
-<p align="center">
- <img src="" width="500">
-</p>
-
 >[!IMPORTANT]
 >O ventilador (MOTOR DC) deverá ser acionado pelo driver de potência já especificado, contendo a modulação PWM vindo do microcontrolador.
+
+## LED DE HEART-BEAT:
+Esse LED informa visualmente sem precisar do uso da GUI, como está o estado do sistema, se ele estiver PULSANDO o sistema está com o driver LIGADO, se estiver aceso de forma CONTÍNUA o sistema está com o driver desligado.
+
+Para a implementação da lógica desse led no sistema foram feitos os seguintes cálculos para funciomaneto em um TIMER:
+
 
 ### ACIONAMENTO DAS SAÍDAS:
 
@@ -305,6 +303,32 @@ Na ocasião acima...
 ## DESENHO ESQUEMÁTICO:
 
 ---
+
+## ETAPAS DE MONTAGEM DO CIRCUITO DO PROJETO:
+
+### INICIO DA MONTAGEM: 
+<p align="center">
+ <img src="" width="500">
+</p>
+
+>[!NOTE]
+>Acima está o início do processo de montagem.
+
+### ADIÇÃO DO SENSOR DE TEMPERATURA LM35:
+<p align="center">
+ <img src="" width="500">
+</p>
+
+>[!NOTE]
+>Acima está a montagem e ligação dos pinos do sensor de temperatura que passa o valor do PV (PROCESS VALUE).
+
+### FIM DA MONTAGEM:
+<p align="center">
+ <img src="" width="500">
+</p>
+
+>[!NOTE]
+>Acima está a montagem e ligação dos 3 LEDs, referente a: FAN, AQUECEDOR E HEART-BEAT.
 
 ## Documentação - Comunicação NEXTION + STM32
 
@@ -433,6 +457,7 @@ Utilziamos de um protocolo novo que fizemos com base no protocolo padrao de envi
    ```c
    DRIVER_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DRIVER_STATE.txt=\"ON\"\xFF\xFF\xFF
    ```
+
 
 
 
