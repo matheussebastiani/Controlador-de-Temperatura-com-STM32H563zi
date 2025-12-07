@@ -253,14 +253,25 @@ Esse LED informa visualmente sem precisar do uso da GUI, como está o estado do 
 
 Para a implementação da lógica desse led no sistema foram feitos os seguintes cálculos para funciomaneto em um TIMER:
 
+- Fled = 0,5 Hz
+- T = 1/F -> T = 1/0,5 -> T = 2s
+- t = (PSC + 1) · (ARR + 1) · 250 MHz 
+- 2 = (PSC + 1) · (ARR + 1) · 4 ns
+- (PSC + 1) · (ARR + 1) = 2/4 n
+- (PSC + 1 ) · (ARR + 1) = 5 · 10⁸
+- 10000 · (ARR + 1) = 5 · 10⁸
+- 50000 = (ARR + 1)
+- ARR = **49999**
+>[!NOTE]
+> PSC seria o PREESCALER e o ARR seria Auto Reload Register
 
-### ACIONAMENTO DAS SAÍDAS:
+## ACIONAMENTO DAS SAÍDAS:
 
 Contendo agora todos os perifericos do projeto, podemos estipular uma logica para que o acionamento das saídas utilizadas sejam feitas corretamente (AQUECEDOR, VENTILADOR).
 >[!IMPORTANT]
 >É válido recordar de que temos 2 modos de operação, AUTOMÁTICO e MANUAL.
 
-# MODO AUTOMÁTICO:
+### MODO AUTOMÁTICO:
 1. O controlador pessoal (P) que será responsável por determinar o valor de saída, tendo em vista a diferença de SP e PV -> e(t) = SP - PV.
 >[!NOTE]
 >O controlador proporcional  ́e definido por: u(t) = Kp · e(t)
@@ -273,23 +284,26 @@ Contendo agora todos os perifericos do projeto, podemos estipular uma logica par
    Na condiçao acima, e erro é positivo, o valor proporcional gerado pelo controlador é maior que 0, o PWM do aquecedor irá receber o valor após a saturação entre 0% e 100% e o ventilador deverá se manter ligado durante esse processo.
 >[!NOTE]
 > EXEMPLOS:
-> - SP = 50◦C, P V = 42◦C, o valor de (e) será  = 8◦C (DIANTE DISSO O AQUECEDOR DEVERÁ LIGAR COM POTÊNCIA PROPORCIONAL AO VALOR DO ERRO (e)
-> - SP=40°C, PV=35°C -> Aquecedor liga com Kp*(5°C)
-> - SP=40°C, PV=47°C -> Fan liga
-> - SP=40°C, PV=40.2°C -> Zona morta
-> - Driver OFF -> ambos desligados
+> - SP = 50◦C, P V = 42◦C, o valor de (e) será = 8◦C (DIANTE DISSO O AQUECEDOR DEVERÁ LIGAR COM POTÊNCIA PROPORCIONAL AO VALOR DO ERRO (e)
+> - SP=40°C, PV=35°C -> **Aquecedor liga com Kp(5°C)**
+> - SP=40°C, PV=40.2°C -> **Zona morta**
+> - Driver OFF -> **Ambos desligados**
 
 3. REGRAS DE FUNCIOMANTO DO VENTILADOR:
    Ele deve ser acionado sempre que o valor do process value (PV) for maior que o set point (SP) -> PV > SP.
    Na condição acima, o erro será negativo, a ação de aquecer não se torna necessária (PWM = 0), a intensidade do ventilador deve ser relacionada com o módulo do valor do erro (e) e o aquecedor deve se manter desligado.
 >[!NOTE]
->EXEMPLO: SP = 40◦C, PV = 47◦C, o valor de (e) será  = −7◦C (DIANTE DISSO O SISTEMA DEVE LIGAR O VENTILADOR CONTENDO A POTÊNCIA EQUIVALENTE OU PROPORCIONAL AO ERRO (e))
+>EXEMPLOS:
+> - SP = 40◦C, PV = 47◦C, o valor de (e) será  = −7◦C (DIANTE DISSO O SISTEMA DEVE LIGAR O VENTILADOR CONTENDO A POTÊNCIA EQUIVALENTE OU PROPORCIONAL AO ERRO (e))
+> - SP=40°C, PV=47°C -> **Fan liga**
+> - SP=40°C, PV=40.2°C -> **Zona morta**
+> - Driver OFF -> **Ambos desligados**
 
 4. ZONA MORTA:
    Foi observado que seria recomendado a implementação de uma "ZONA MORTA" pelo fato de que oscilações rápidas de temperatura pudessem ocorrer -> |SP - PV| < 0,5 ◦C
    Para essa condição basicamente o ventilador e aquecedor mantém-se desligados e o sistema fica no aguardo de uma nova verificação.
 
-# MODO MANUAL:
+### MODO MANUAL:
 Nesse modo o próprio usuário tem controle do sistema de aquecer e ventilar.
 Na ocasião acima...
 1. O controlador proporcional (KP) irá ser completamente ignorado.
@@ -457,6 +471,7 @@ Utilziamos de um protocolo novo que fizemos com base no protocolo padrao de envi
    ```c
    DRIVER_STATE.txt="<TEXTO A PARTIR DO MICRO>" -> DRIVER_STATE.txt=\"ON\"\xFF\xFF\xFF
    ```
+
 
 
 
